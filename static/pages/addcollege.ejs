@@ -1,0 +1,59 @@
+<!-- Main -->
+<article id="main">
+
+    <!-- One -->
+    <section class="container">
+        <!-- Content -->
+        <div class="content">
+            <div class="form">
+                <ul class="tab-group">
+                    <li class="tab active"><a>Add College</a></li>
+                    <li class="tab"><a ng-click="edit()">Edit/Delete College</a></li>
+                </ul>
+
+                <div class="tab-content">
+                    <div id="login">
+                        <h2>Add College</h2>
+
+                        <form name="addCollegeForm" class="form-horizontal" method="post"
+                              ng-submit="submit()" form-autofill-fix>
+
+                            <div class="field-wrap">
+                                <label>
+                                    College Name<span class="req">*</span>
+                                </label>
+                                <input type="text" name="name" ng-model="credentials.name" required/>
+                            </div>
+
+                            <div class="field-wrap">
+                                <label>
+                                    Contact Number<span class="req">*</span>
+                                </label>
+                                <input type="text" name="contactno" ng-model="credentials.contactno" required/>
+                            </div>
+
+                            <div class="field-wrap">
+                                <label>
+                                    Email Address<span class="req">*</span>
+                                </label>
+                                <input type="email" name="email" ng-model="credentials.email" required autocomplete="off"/>
+                            </div>
+
+                            <div class="field-wrap">
+                                <label>
+                                    Address<span class="req">*</span>
+                                </label>
+                                <input type="text" name="address" ng-model="credentials.address" required/>
+                            </div>
+
+                            <button type="submit" class="button button-block">Submit</button>
+
+                        </form>
+                    </div>
+                </div><!-- tab-content -->
+            </div> <!-- /form -->
+        </div>
+
+    </section>
+
+</article>

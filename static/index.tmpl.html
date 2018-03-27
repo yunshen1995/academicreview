@@ -1,0 +1,177 @@
+<html ng-app="UniReviewWeb">
+<head>
+    <title>Academic Review</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body ng-controller="mainController" class="index">
+<div id="page-wrapper">
+
+    <!-- Header -->
+    <header id="header" ng-class="{'alt':check.mainpage}">
+        <h1 id="logo"><a href="/" ng-click="home()" style="border-top: 5px double white;border-bottom: 5px double white;padding: 8px 0">Academic Review</a></h1>
+        <nav id="nav">
+            <ul>
+                <li ng-if="currentUser" class="current"><a href="#!/studentprofile">Welcome, {{ currentUser.name }}</a></li>
+                <li class="submenu">
+                    <a href="#">Colleges</a>
+                    <ul>
+                        <li><a href="#!/colleges">All Colleges</a></li>
+                        <li><a href="#!/addcollege">Modify College</a></li>
+                    </ul>
+                </li>
+                <li><a href="#!/signin" ng-if="!currentUser" ng-click="signin()" class="button special2">Sign In</a></li>
+                <li><a href="#!/signup" ng-if="!currentUser" ng-click="signup()" class="button special">Sign Up</a></li>
+                <li><a href="" ng-if="currentUser" ng-click="logout()" class="button special3">Logout</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <ui-view></ui-view>
+    <div ng-view></div>
+
+    <!-- Footer -->
+    <footer id="footer">
+
+        <ul class="icons">
+            <li><a href="https://github.com/rrongan/unireviewweb-full" class="icon circle fa-github"><span class="label">Github</span></a></li>
+        </ul>
+
+        <ul class="copyright">
+            <li>&copy; Academic Review</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+        </ul>
+
+    </footer>
+
+</div>
+
+<script src="/public/javascripts/angular/angular-ui-router.js"></script>
+
+<script type="text/ng-template" id="display">
+    <td>
+        <jk-rating-stars rating="review.rating" read-only="readOnly"></jk-rating-stars>
+        <h1 style="padding-left:5px">{{review.comment}}</h1>
+        <blockquote style="font-size: 14px;">Reviewed by {{review.reviewerName}} on {{review.date}}</blockquote>
+    </td>
+    <td ng-show="showEditDelete(review.reviewer)">
+        <md-button class="md-fab md-primary" aria-label="Use Android" ng-click="editReview(review)">
+            <md-icon class="editicon" md-svg-src="/public/images/icons/edit.svg"></md-icon>
+        </md-button>
+        <md-button class="md-fab md-warn" aria-label="Use Android" ng-click="deleteReview($event,review)">
+            <md-icon class="editicon" md-svg-src="/public/images/icons/delete.svg"></md-icon>
+        </md-button>
+    </td>
+</script>
+
+<script type="text/ng-template" id="edit">
+    <td>
+        <jk-rating-stars rating="review.rating"></jk-rating-stars>
+        <input type="text" ng-model=review.comment class="form-control input-sm"/>
+    </td>
+    <td ng-show="showEditDelete(review.reviewer)">
+        <md-button class="md-fab md-primary" aria-label="Use Android" ng-click="updateReview(review)">
+            <md-icon class="editicon" md-svg-src="/public/images/icons/save.svg"></md-icon>
+        </md-button>
+        <md-button class="md-fab md-warn" aria-label="Use Android" ng-click="reset()">
+            <md-icon class="editicon" md-svg-src="/public/images/icons/cancel.svg"></md-icon>
+        </md-button>
+    </td>
+</script>
+
+<script type="text/ng-template" id="displaycollege">
+    <td>
+        <h1 style="padding-left:5px">{{college.name}}</h1>
+        <p style="padding-left:5px">{{college.contactno}}</p>
+        <p style="padding-left:5px">{{college.email}}</p>
+        <p style="padding-left:5px">{{college.address}}</p>
+    </td>
+    <td ng-show="showEditDelete()">
+        <md-button class="md-fab md-primary" aria-label="Use Android" ng-click="editCollege(college)">
+            <md-icon class="editicon" md-svg-src="/public/images/icons/edit.svg"></md-icon>
+        </md-button>
+        <md-button class="md-fab md-warn" aria-label="Use Android" ng-click="deleteCollege($event,college)">
+            <md-icon class="editicon" md-svg-src="/public/images/icons/delete.svg"></md-icon>
+        </md-button>
+    </td>
+</script>
+
+<script type="text/ng-template" id="editcollege">
+    <td>
+        <label for="name">Name</label>
+        <input id="name" type="text" ng-model=college.name class="form-control input-sm"/>
+        <label for="contactno">Contact Number</label>
+        <input id="contactno" type="text" ng-model=college.contactno class="form-control input-sm"/>
+        <label for="email">Email</label>
+        <input id="email" type="text" ng-model=college.email class="form-control input-sm"/>
+        <label for="address">Address</label>
+        <input id="address" type="text" ng-model=college.address class="form-control input-sm"/>
+    </td>
+    <td ng-show="showEditDelete()">
+        <md-button class="md-fab md-primary" aria-label="Use Android" ng-click="updateCollege(college)">
+            <md-icon class="editicon" md-svg-src="/public/images/icons/save.svg"></md-icon>
+        </md-button>
+        <md-button class="md-fab md-warn" aria-label="Use Android" ng-click="reset()">
+            <md-icon class="editicon" md-svg-src="/public/images/icons/cancel.svg"></md-icon>
+        </md-button>
+    </td>
+</script>
+
+<script type="text/ng-template" id="displaystudent">
+    <tr>
+        <td>
+            <p>Name: {{student.name}}</p>
+            <p>Email: {{student.email}}</p>
+            <p>Username: {{student.username}}</p>
+            <p>Date of Birth: {{student.dob}}</p>
+            <p>Gender: {{student.gender}}</p>
+            <p>Address: {{student.address}}</p>
+        </td>
+        <td ng-show="showEditDelete()">
+            <md-button class="md-fab md-primary" aria-label="Use Android" ng-click="editStudent(student)">
+                <md-icon class="editicon" md-svg-src="/public/images/icons/edit.svg"></md-icon>
+            </md-button>
+            <md-button class="md-fab md-warn" aria-label="Use Android" ng-click="deleteStudent($event,student)">
+                <md-icon class="editicon" md-svg-src="/public/images/icons/delete.svg"></md-icon>
+            </md-button>
+        </td>
+    </tr>
+</script>
+
+<script type="text/ng-template" id="editstudent">
+    <tr>
+        <td>
+            <label for="name">Name</label>
+            <input id="name" type="text" ng-model=student.name class="form-control input-sm"/>
+            <label for="email">Email</label>
+            <input id="email" type="text" ng-model=student.email class="form-control input-sm"/>
+            <label for="dob">Date of Birth</label><br>
+            <md-datepicker id="dob" md-current-view="year" ng-model="student.dob" md-placeholder="Enter date"></md-datepicker><br>
+            <label for="gender">Gender</label><br>
+            <md-select id="gender" ng-model="student.gender">
+                <md-option ng-repeat="gender in genderopt" value="{{gender}}">{{gender}}</md-option>
+            </md-select>
+            <label for="address">Address</label>
+            <textarea id="address" ng-model=student.address></textarea>
+
+            <h2>Edit Password</h2>
+            <label for="oldpassword">Current Password</label>
+            <input id="oldpassword" type="password" ng-model=student.oldpassword class="form-control input-sm"/>
+            <label for="newpassword">New Password</label>
+            <input id="newpassword" type="password" ng-model=student.newpassword class="form-control input-sm"/>
+            <label for="reenterpassword">Confirm Password</label>
+            <input id="reenterpassword" type="password" ng-model=student.reenterpassword class="form-control input-sm"/>
+        </td>
+    </tr>
+    <tr>
+        <td ng-show="showEditDelete()">
+            <md-button class="md-fab md-primary" aria-label="Use Android" ng-click="updateStudent(student)">
+                <md-icon class="editicon" md-svg-src="/public/images/icons/save.svg"></md-icon>
+            </md-button>
+            <md-button class="md-fab md-warn" aria-label="Use Android" ng-click="reset()">
+                <md-icon class="editicon" md-svg-src="/public/images/icons/cancel.svg"></md-icon>
+            </md-button>
+        </td>
+    </tr>
+</script>
+
+</body>
+</html>

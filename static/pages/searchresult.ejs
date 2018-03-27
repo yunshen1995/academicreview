@@ -1,0 +1,22 @@
+<!-- Main -->
+<article id="main" ng-controller="searchResultController">
+
+    <h2 style="text-align: center">{{keyword}}</h2>
+
+    <!-- One -->
+    <section class="wrapper style4 container">
+        <!-- Content -->
+        <div class="content">
+            <section>
+                <table class ="default table table-striped table-bordered" align="center" valign="left">
+                    <tr ng-repeat="result in results" ng-click="go(result,result.image)">
+                        <td style="padding:0; vertical-align:bottom"><img ng-src="{{ result.image }}" /></td>
+                        <td><h2 style="margin:0">{{result.name}}</h2>{{result.address}}</td>
+                    </tr>
+                </table>
+            </section>
+        </div>
+
+    </section>
+
+</article>

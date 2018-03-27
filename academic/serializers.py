@@ -1,4 +1,6 @@
 from rest_framework import serializers
+from django.contrib.auth import update_session_auth_hash
+from rest_auth.registration.serializers import RegisterSerializer
 from .models import User, College, Course, StudentCourse, Reply, Review
 
 
@@ -23,15 +25,29 @@ class ReplySerializer(serializers.ModelSerializer):
         fields = ('id', 'review', 'replier', 'comment')
 
 
+class CustomRegisterSerializer(RegisterSerializer):
+    first_name = serializers.CharField(write_only=True)
+    last_name = serializers.CharField(write_only=True)
+
+    def save(self, request):
+        user = super(CustomRegisterSerializer, self).save(request)
+        # user.is_active = False
+        user.first_name = self.validated_data.get('first_name')
+        user.last_name = self.validated_data.get('last_name')
+        user.save()
+        return user
+
+
 class UserSerializer(serializers.ModelSerializer):
     course = StudentCourseSerializer(source='studentcourse_set', many=True, allow_null=True)
-    password = serializers.CharField(style={'input_type': 'password'}, write_only=True)
+    password = serializers.CharField(style={'input_type': 'password'}, write_only=True, required=False)
+    confirm_password = serializers.CharField(style={'input_type': 'password'}, write_only=True, required=False)
     reviews = ReviewSerializer(many=True, allow_null=True)
 
     class Meta:
         model = User
-        fields = ('id', 'username', 'password', 'email', 'first_name', 'last_name', 'gender', 'dob', 'address',
-                  'contact_number', 'user_type', 'course', 'reviews')
+        fields = ('id', 'username', 'email', 'first_name', 'last_name', 'gender', 'dob', 'address',
+                  'contact_number', 'user_type', 'course', 'reviews', 'password', 'confirm_password')
 
     def create(self, validated_data):
         user = User(
@@ -101,11 +117,17 @@ class UserSerializer(serializers.ModelSerializer):
                 r1.save()
                 instance.reviews.add(r1.id)
 
-        for attr, value in validated_data.items():
-            if attr == 'password':
-                instance.set_password(value)
-                del validated_data['password']
-                break
+        password = validated_data.get('password', None)
+        confirm_password = validated_data.get('confirm_password', None)
+
+        if password and confirm_password and password == confirm_password:
+            instance.set_password(password)
+            instance.save()
+            del validated_data['password']
+            del validated_data['confirm_password']
+
+        update_session_auth_hash(self.context.get('request'), instance)
+
         instance.__dict__.update(**validated_data)
         instance.save()
         return instance

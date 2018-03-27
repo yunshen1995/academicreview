@@ -1,0 +1,28 @@
+<!-- Main -->
+<article id="main">
+
+    <!-- One -->
+    <section class="container">
+        <!-- Content -->
+        <div class="content">
+            <div class="form">
+                <ul class="tab-group">
+                    <li class="tab"><a ng-click="add()">Add College</a></li>
+                    <li class="tab active"><a>Edit/Delete College</a></li>
+                </ul>
+
+                <div class="tab-content">
+                    <div id="login">
+                        <h2>Edit/Delete College</h2>
+                        <table class ="editcollege table table-striped table-bordered" align="center" valign="left">
+                            <tr ng-repeat="college in colleges" ng-include src="getTemplate(college)">
+                            </tr>
+                        </table>
+                    </div>
+                </div><!-- tab-content -->
+            </div> <!-- /form -->
+        </div>
+
+    </section>
+
+</article>

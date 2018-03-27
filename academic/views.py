@@ -1,13 +1,21 @@
-from rest_framework import viewsets, response
+from rest_framework import permissions,viewsets
 from .models import User, College, Course, Reply, Review, StudentCourse
 from .serializers import UserSerializer, CollegeSerializer, ReplySerializer, ReviewSerializer, CourseSerializer, StudentCourseSerializer
 from rest_framework.decorators import detail_route
+from rest_framework.response import Response
 from rest_framework.exceptions import ParseError
+from .permissions import IsAccountOwner
+from django.views.generic.base import TemplateView
+
+
+class IndexView(TemplateView):
+    template_name = '../templates/index.ejs'
 
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    permission_classes = (permissions.IsAuthenticated, IsAccountOwner)
 
     @detail_route(methods=['get', 'post'], url_path='course')
     def course(self, request, pk=None):
@@ -22,7 +30,7 @@ class UserViewSet(viewsets.ModelViewSet):
         serializer = []
         for s in studentcourse:
             serializer.append(StudentCourseSerializer(s).data)
-        return response.Response(serializer)
+        return Response(serializer)
 
     def add_course(self, request, pk=None):
         user = User.objects.filter(id=pk)[0]
@@ -41,7 +49,7 @@ class UserViewSet(viewsets.ModelViewSet):
         serializer = []
         for s in studentcourse:
             serializer.append(StudentCourseSerializer(s).data)
-        return response.Response(serializer)
+        return Response(serializer)
 
     @detail_route(methods=['get', 'put', 'delete'], url_path='course/(?P<course_id>[0-9]+)')
     def course_with_id(self, request, pk=None, course_id=None):
@@ -59,7 +67,7 @@ class UserViewSet(viewsets.ModelViewSet):
         serializer = []
         for s in studentcourse:
             serializer.append(StudentCourseSerializer(s).data)
-        return response.Response(serializer)
+        return Response(serializer)
 
     def update_course(self, request, pk=None, course_id=None):
         user = User.objects.filter(id=pk)[0]
@@ -74,11 +82,11 @@ class UserViewSet(viewsets.ModelViewSet):
         serializer = []
         for s in studentcourse:
             serializer.append(StudentCourseSerializer(s).data)
-        return response.Response(serializer)
+        return Response(serializer)
 
     def remove_course(self, request, pk=None, course_id=None):
         StudentCourse.objects.filter(user_id=pk).filter(course_id=course_id).delete()
-        return response.Response({"message": "Successfully Deleted Course From User"})
+        return Response({"message": "Successfully Deleted Course From User"})
 
     @detail_route(methods=['get', 'post'], url_path='review')
     def review(self, request, pk=None):
@@ -90,7 +98,7 @@ class UserViewSet(viewsets.ModelViewSet):
     def all_review(self, request, pk=None):
         user = User.objects.filter(id=pk)[0]
         review = user.reviews.all()
-        return response.Response(review.values())
+        return Response(review.values())
 
     def add_review(self, request, pk=None):
         user = User.objects.filter(id=pk)[0]
@@ -105,7 +113,7 @@ class UserViewSet(viewsets.ModelViewSet):
             r1.save()
             user.reviews.add(r1.id)
 
-        return response.Response(user.reviews.all().values())
+        return Response(user.reviews.all().values())
 
     @detail_route(methods=['get', 'put', 'delete'], url_path='review/(?P<review_id>[0-9]+)')
     def review_with_id(self, request, pk=None, review_id=None):
@@ -123,7 +131,7 @@ class UserViewSet(viewsets.ModelViewSet):
         for r in reviews.values():
             if str(r['id']) == review_id:
                 data.append(r)
-        return response.Response(data)
+        return Response(data)
 
     def update_review(self, request, pk=None, review_id=None):
         user = User.objects.filter(id=pk)[0]
@@ -145,7 +153,7 @@ class UserViewSet(viewsets.ModelViewSet):
                 for r in reviews.values():
                     if r['id'] == r1.id:
                         data.append(r)
-        return response.Response(data)
+        return Response(data)
 
     def remove_review(self, request, pk=None, review_id=None):
         user = User.objects.filter(id=pk)[0]
@@ -153,7 +161,7 @@ class UserViewSet(viewsets.ModelViewSet):
         for r in reviews:
             if str(r.id) == review_id:
                 r.delete()
-        return response.Response({"message": "Successfully Deleted Review From User"})
+        return Response({"message": "Successfully Deleted Review From User"})
 
 
 class CollegeViewSet(viewsets.ModelViewSet):
@@ -170,7 +178,7 @@ class CollegeViewSet(viewsets.ModelViewSet):
     def all_review(self, request, pk=None):
         college = College.objects.filter(id=pk)[0]
         review = college.reviews.all()
-        return response.Response(review.values())
+        return Response(review.values())
 
     def add_review(self, request, pk=None):
         college = College.objects.filter(id=pk)[0]
@@ -185,7 +193,7 @@ class CollegeViewSet(viewsets.ModelViewSet):
             r1.save()
             college.reviews.add(r1.id)
 
-        return response.Response(college.reviews.all().values())
+        return Response(college.reviews.all().values())
 
     @detail_route(methods=['get', 'put', 'delete'], url_path='review/(?P<review_id>[0-9]+)')
     def review_with_id(self, request, pk=None, review_id=None):
@@ -203,7 +211,7 @@ class CollegeViewSet(viewsets.ModelViewSet):
         for r in reviews.values():
             if str(r['id']) == review_id:
                 data.append(r)
-        return response.Response(data)
+        return Response(data)
 
     def update_review(self, request, pk=None, review_id=None):
         college = College.objects.filter(id=pk)[0]
@@ -225,7 +233,7 @@ class CollegeViewSet(viewsets.ModelViewSet):
                 for r in reviews.values():
                     if r['id'] == r1.id:
                         data.append(r)
-        return response.Response(data)
+        return Response(data)
 
     def remove_review(self, request, pk=None, review_id=None):
         college = College.objects.filter(id=pk)[0]
@@ -233,7 +241,7 @@ class CollegeViewSet(viewsets.ModelViewSet):
         for r in reviews:
             if str(r.id) == review_id:
                 r.delete()
-        return response.Response({"message": "Successfully Deleted Review From College"})
+        return Response({"message": "Successfully Deleted Review From College"})
 
 
 class CourseViewSet(viewsets.ModelViewSet):
@@ -250,7 +258,7 @@ class CourseViewSet(viewsets.ModelViewSet):
     def all_review(self, request, pk=None):
         course = Course.objects.filter(id=pk)[0]
         review = course.reviews.all()
-        return response.Response(review.values())
+        return Response(review.values())
 
     def add_review(self, request, pk=None):
         course = Course.objects.filter(id=pk)[0]
@@ -265,7 +273,7 @@ class CourseViewSet(viewsets.ModelViewSet):
             r1.save()
             course.reviews.add(r1.id)
 
-        return response.Response(course.reviews.all().values())
+        return Response(course.reviews.all().values())
 
     @detail_route(methods=['get', 'put', 'delete'], url_path='review/(?P<review_id>[0-9]+)')
     def review_with_id(self, request, pk=None, review_id=None):
@@ -283,7 +291,7 @@ class CourseViewSet(viewsets.ModelViewSet):
         for r in reviews.values():
             if str(r['id']) == review_id:
                 data.append(r)
-        return response.Response(data)
+        return Response(data)
 
     def update_review(self, request, pk=None, review_id=None):
         course = Course.objects.filter(id=pk)[0]
@@ -305,7 +313,7 @@ class CourseViewSet(viewsets.ModelViewSet):
                 for r in reviews.values():
                     if r['id'] == r1.id:
                         data.append(r)
-        return response.Response(data)
+        return Response(data)
 
     def remove_review(self, request, pk=None, review_id=None):
         course = Course.objects.filter(id=pk)[0]
@@ -313,7 +321,7 @@ class CourseViewSet(viewsets.ModelViewSet):
         for r in reviews:
             if str(r.id) == review_id:
                 r.delete()
-        return response.Response({"message": "Successfully Deleted Review From Course"})
+        return Response({"message": "Successfully Deleted Review From Course"})
 
 
 class ReplyViewSet(viewsets.ModelViewSet):

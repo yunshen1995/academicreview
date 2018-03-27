@@ -1,0 +1,76 @@
+<!-- Main -->
+<article id="main">
+
+    <!-- One -->
+    <section class="container">
+        <!-- Content -->
+        <div class="content">
+            <div class="form">
+                <ul class="tab-group">
+                    <li class="tab active"><a>Sign Up</a></li>
+                    <li class="tab"><a ng-click="signin()">Log In</a></li>
+                </ul>
+
+                <div class="tab-content">
+                    <div id="signup">
+                        <h2>Sign Up for Free</h2>
+
+                        <form name="loginForm" class="form-horizontal" method="post"
+                              ng-submit="submit()" form-autofill-fix>
+
+                            <div class="top-row">
+                                <div class="field-wrap">
+                                    <label>
+                                        First Name<span class="req">*</span>
+                                    </label>
+                                    <input type="text" name="first_name" ng-model="credentials.first_name" required autocomplete="off" />
+                                </div>
+
+                                <div class="field-wrap">
+                                    <label>
+                                        Last Name<span class="req">*</span>
+                                    </label>
+                                    <input type="text" name="last_name" ng-model="credentials.last_name" required autocomplete="off"/>
+                                </div>
+                            </div>
+
+                            <div class="field-wrap">
+                                <label>
+                                    Email Address<span class="req">*</span>
+                                </label>
+                                <input type="email" name="email" ng-model="credentials.email" required autocomplete="off"/>
+                            </div>
+
+                            <div class="field-wrap">
+                                <label>
+                                    Username<span class="req">*</span>
+                                </label>
+                                <input type="text" name="username" ng-model="credentials.username" required autocomplete="off"/>
+                            </div>
+
+                            <div class="field-wrap">
+                                <label>
+                                    Set A Password<span class="req">*</span>
+                                </label>
+                                <input type="password" name="password1" ng-model="credentials.password1" required autocomplete="off"/>
+                            </div>
+
+                            <div class="field-wrap">
+                                <label>
+                                    Confirm Password<span class="req">*</span>
+                                </label>
+                                <input type="password" name="password2" ng-model="credentials.password2" required autocomplete="off"/>
+                            </div>
+
+                            <button type="submit" class="button button-block">Get Started</button>
+
+                        </form>
+
+                    </div>
+                </div><!-- tab-content -->
+            </div> <!-- /form -->
+        </div>
+
+    </section>
+
+</article>

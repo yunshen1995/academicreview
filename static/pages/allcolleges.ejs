@@ -1,0 +1,23 @@
+<!-- Main -->
+<article id="main" ng-controller="allCollegesController">
+
+    <h2 style="text-align: center">All Colleges</h2>
+
+    <!-- One -->
+    <section class="wrapper style4 container">
+        <!-- Content -->
+        <div class="content">
+            <section>
+                <table class ="colleges table table-striped table-bordered" align="center" valign="left">
+                    <tr ng-repeat="result in results | filter:getFiltered">
+                        <td ng-click="go(result,result.image)"><img ng-src="{{ result.image }}" /><h2 style="margin:0">{{result.name}}</h2>{{result.address}}</td>
+                        <td ng-click="go(results[result._index+1],result.image)"><img ng-src="{{ results[result._index+1].image }}" /><h2 style="margin:0">{{results[result._index+1].name}}</h2>{{results[result._index+1].address}}</td>
+                        <td ng-click="go(results[result._index+2],result.image)"><img ng-src="{{ results[result._index+2].image }}" /><h2 style="margin:0">{{results[result._index+2].name}}</h2>{{results[result._index+2].address}}</td>
+                    </tr>
+                </table>
+            </section>
+        </div>
+
+    </section>
+
+</article>

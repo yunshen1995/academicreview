@@ -1,6 +1,28 @@
 from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import BaseUserManager
+
+
+class AccountManager(BaseUserManager):
+    def create_user(self, email, password=None, **kwargs):
+        if not email:
+            raise ValueError('Users must have a valid email address.')
+        if not kwargs.get('username'):
+            raise ValueError('Users must have a valid username.')
+        account = self.model(
+            email=self.normalize_email(email), username=kwargs.get('username')
+        )
+
+        account.set_password(password)
+        account.save()
+        return account
+
+    def create_superuser(self, email, password, **kwargs):
+        account = self.create_user(email, password, **kwargs)
+        account.is_admin = True
+        account.save()
+        return account
 
 
 class User(AbstractUser):
@@ -16,13 +38,14 @@ class User(AbstractUser):
         ('N', 'Prefer Not To Say'),
     )
     id = models.AutoField(primary_key=True)
-    gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
-    dob = models.DateField()
-    address = models.CharField(max_length=300)
-    contact_number = models.CharField(max_length=30)
-    user_type = models.CharField(max_length=15, choices=USERTYPE_CHOICES)
+    gender = models.CharField(max_length=1, choices=GENDER_CHOICES, null=True)
+    dob = models.DateField(null=True)
+    address = models.CharField(max_length=300, null=True)
+    contact_number = models.CharField(max_length=30, null=True)
+    user_type = models.CharField(max_length=15, choices=USERTYPE_CHOICES, null=True)
     course = models.ManyToManyField('Course', through='StudentCourse', related_name='students')
     reviews = models.ManyToManyField('Review', related_name='students')
+    objects = AccountManager()
 
     def get_full_name(self):
         return ' '.join([self.first_name, self.last_name])

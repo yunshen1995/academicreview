@@ -1,0 +1,48 @@
+<!-- Main -->
+<article id="main">
+
+    <!-- One -->
+    <section class="container">
+        <!-- Content -->
+        <div class="content">
+            <div class="form">
+
+                <ul class="tab-group">
+                    <li class="tab"><a ng-click="signup()">Sign Up</a></li>
+                    <li class="tab active"><a>Log In</a></li>
+                </ul>
+
+                <div class="tab-content">
+                    <div id="login">
+                        <h2>Welcome Back!</h2>
+
+                        <form name="loginForm" class="form-horizontal" method="post"
+                              ng-submit="submit()" form-autofill-fix>
+
+                            <div class="field-wrap">
+                                <label>
+                                    Username<span class="req">*</span>
+                                </label>
+                                <input type="text" name="username" ng-model="credentials.username" required/>
+                            </div>
+
+                            <div class="field-wrap">
+                                <label>
+                                    Password<span class="req">*</span>
+                                </label>
+                                <input type="password" name="password" ng-model="credentials.password" required/>
+                            </div>
+
+                            <p class="forgot"><a href="#">Forgot Password?</a></p>
+
+                            <button type="submit" class="button button-block">Log In</button>
+
+                        </form>
+                    </div>
+                </div><!-- tab-content -->
+            </div> <!-- /form -->
+        </div>
+
+    </section>
+
+</article>

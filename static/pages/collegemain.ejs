@@ -1,0 +1,44 @@
+<!-- Banner Background: https://cdn.theculturetrip.com/wp-content/uploads/2016/08/6995209237_5244628609_k.jpg -->
+<!-- Banner -->
+<section id="collegebanner" ng-style="image"></section>
+
+<!-- Main -->
+<article id="main" style="padding-top:0">
+
+	<header class="special container">
+		<span class="icon"><img ng-src="{{icon}}"></span>
+		<h1 style="font-size: 3em">{{college.name}}</h1>
+		<jk-rating-stars rating="rating" read-only="readOnly" class="my-custom-stars"></jk-rating-stars>
+		<p style="font-size: 1.5em">{{rating}} &#9733;</p>
+	</header>
+
+	<!-- One -->
+	<section class="wrapper style2 container special-alt">
+		<ul class="tab-group-college">
+			<li class="tab" ng-click="overviewtab()" ng-class="{active:tab}"><a>Overview</a></li>
+			<li class="tab" ng-click="reviewtab()" ng-class="{active:!tab}"><a>Review</a></li>
+		</ul>
+		<div ng-show="show">
+			<h2>{{college.name}}</h2>
+			<blockquote >From Wikipedia, the free encyclopedia</blockquote >
+			<div ng-bind-html="wiki">
+			</div>
+			<h2>Contact</h2>
+			<p>Contact Number: {{college.contactno}}</p>
+			<p>Address: {{college.address}}</p>
+			<p>Email: {{college.email}}</p>
+		</div>
+		<div ng-show="!show">
+			<table class ="review table table-striped table-bordered" align="center" valign="left">
+				<tr ng-repeat="review in reviews" ng-include src="getTemplate(review)">
+				</tr>
+			</table>
+			<h2>Add Review:</h2>
+			<h3>Rating: <jk-rating-stars read-only="!currentUser" rating="addreviewrating" class="my-review-custom-stars"></jk-rating-stars></h3>
+			<textarea ng-model="comment" ng-disabled="!currentUser" required></textarea>
+			<button ng-disabled="!currentUser" ng-click="addReview()" style="margin-top:5px;" class="button special2">Submit</button>
+			<strong ng-show="!currentUser">Please Sign In to Add Review! </strong>
+		</div>
+	</section>
+
+</article>
