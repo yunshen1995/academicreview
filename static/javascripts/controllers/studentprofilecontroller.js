@@ -1,18 +1,18 @@
-function studentProfileController($scope, $http, $rootScope, $location, $route, $mdDialog, moment ) {
+function studentProfileController($scope, $http, $rootScope, $location, $route, $mdDialog, moment, AuthenticationService) {
 
 	$scope.check.mainpage = false;
 	$scope.selected = {};
 	$scope.genderopt = ['Male', 'Female','Not Disclose'];
 
 	setTimeout(function () {
-		$http.get('/student/'+$rootScope.currentUser.studentid).then(function (data) {
-			$scope.student = data.data[0];
+		$http.get('api/v1/users/'+$rootScope.currentUser.id+'/').then(function (data) {
+			$scope.student = data.data;
 			if($scope.student.dob)
 				$scope.student.dob = moment($scope.student.dob, moment.ISO_8601).format('YYYY-MM-DD');
 		});
 
 		$scope.getTemplate = function (student) {
-			if (student._id === $scope.selected._id){
+			if (student.id === $scope.selected.id){
 				return 'editstudent';
 			}
 			else {
@@ -33,14 +33,16 @@ function studentProfileController($scope, $http, $rootScope, $location, $route, 
 	};
 
 	$scope.updateStudent = function (student) {
-		$http.put('/student/'+student._id,student).then(function () {
+	    if(student.dob)
+				student.dob = moment(student.dob, moment.ISO_8601).format('YYYY-MM-DD');
+		$http.put('api/v1/users/'+student.id+'/',student).then(function () {
 			if(student.oldpassword && student.newpassword && student.reenterpassword){
 				var password = {
 					oldpassword: student.oldpassword,
-					newpassword: student.newpassword,
-					reenterpassword: student.reenterpassword
+					new_password1: student.newpassword,
+					new_password2: student.reenterpassword
 				};
-				$http.put('/student/'+student._id+'/password',password).then(function () {
+				$http.post('api/v1/jwt/password/change/',password).then(function () {
 					var alert = $mdDialog.alert()
 						.title('Student Details and Password Updated')
 						.ariaLabel('Lucky day')
@@ -81,8 +83,9 @@ function studentProfileController($scope, $http, $rootScope, $location, $route, 
 			.ok('Confirm');
 
 		$mdDialog.show(confirm).then(function() {
-			$http.delete('/student/'+student._id).then(function () {
-				$rootScope.logout();
+			$http.delete('api/v1/users/'+student.id+'/').then(function () {
+				AuthenticationService.Logout();
+				$rootScope.$broadcast('logoutSuccess');
 				$location.path('/');
 				$mdDialog.show(alert);
 			});

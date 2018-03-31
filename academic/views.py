@@ -15,7 +15,6 @@ class IndexView(TemplateView):
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = (permissions.IsAuthenticated, IsAccountOwner)
 
     @detail_route(methods=['get', 'post'], url_path='course')
     def course(self, request, pk=None):
@@ -225,7 +224,7 @@ class CollegeViewSet(viewsets.ModelViewSet):
                 comment = review.get("comment")
                 reviewer = review.get("reviewer")
                 type = review.get("type")
-                reviewer_instance = College.objects.get(id=reviewer)
+                reviewer_instance = User.objects.get(id=reviewer)
                 r1 = Review(rating=rating, comment=comment, reviewer=reviewer_instance, type=type)
                 r1.save()
                 college.reviews.add(r1.id)
@@ -305,7 +304,7 @@ class CourseViewSet(viewsets.ModelViewSet):
                 comment = review.get("comment")
                 reviewer = review.get("reviewer")
                 type = review.get("type")
-                reviewer_instance = Course.objects.get(id=reviewer)
+                reviewer_instance = User.objects.get(id=reviewer)
                 r1 = Review(rating=rating, comment=comment, reviewer=reviewer_instance, type=type)
                 r1.save()
                 course.reviews.add(r1.id)

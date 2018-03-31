@@ -6,6 +6,7 @@ require('angular-aria');
 require('angular-animate');
 require('angular-material');
 require('angular-messages');
+require('angular-sanitize');
 require('angular-ui-bootstrap');
 require('ngstorage');
 require('angular-csrf-cross-domain');
@@ -23,7 +24,7 @@ require('./jquery/util.js');
 require('./jquery/main.js');
 
 var app = angular.module('AcademicReview', ['ui.router', 'ngRoute', 'ngStorage', 'ui.bootstrap', 'ngMaterial',
-    'ngMessages', 'jkAngularRatingStars', 'jtt_wikipedia', 'angularMoment', 'csrf-cross-domain']);
+    'ngMessages', 'ngSanitize', 'jkAngularRatingStars', 'jtt_wikipedia', 'angularMoment', 'csrf-cross-domain']);
 
 require('./controllers/index');
 require('./services/authentication');
@@ -63,7 +64,7 @@ app.config(['$httpProvider', '$routeProvider', '$sceDelegateProvider', function 
         controller: 'verifyEmailController'
     });
 
-    $sceDelegateProvider.resourceUrlWhitelist(['self', 'https://en.wikipedia.org/**']);
+    $sceDelegateProvider.resourceUrlWhitelist(['self', 'https://en.wikipedia.org/**', 'https://www.google.com/']);
 
     $httpProvider.defaults.xsrfCookieName = 'csrftoken';
     $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';

@@ -163,6 +163,24 @@ class CollegeSerializer(serializers.ModelSerializer):
         college.save()
         return college
 
+    def update(self, instance, validated_data):
+        instance.__dict__.update(**validated_data)
+        instance.save()
+
+        if "reviews" in self.initial_data:
+            reviews = self.initial_data.get("reviews")
+            for r in reviews:
+                rating = r.get("rating")
+                comment = r.get("comment")
+                reviewer = r.get("reviewer")
+                type = r.get("type")
+                reviewer_instance = User.objects.get(id=reviewer)
+                r1 = Review(rating=rating, comment=comment, reviewer=reviewer_instance, type=type)
+                r1.save()
+                instance.reviews.add(r1.id)
+        instance.save()
+        return instance
+
 
 class CourseSerializer(serializers.ModelSerializer):
     reviews = ReviewSerializer(many=True, allow_null=True)

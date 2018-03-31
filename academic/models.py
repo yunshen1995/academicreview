@@ -2,6 +2,7 @@ from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import BaseUserManager
+from datetime import datetime, timedelta
 
 
 class AccountManager(BaseUserManager):
@@ -32,13 +33,8 @@ class User(AbstractUser):
         ('Lecturer', 'Lecturer'),
         ('Student', 'Student'),
     )
-    GENDER_CHOICES = (
-        ('M', 'Male'),
-        ('F', 'Female'),
-        ('N', 'Prefer Not To Say'),
-    )
     id = models.AutoField(primary_key=True)
-    gender = models.CharField(max_length=1, choices=GENDER_CHOICES, null=True)
+    gender = models.CharField(max_length=30, null=True)
     dob = models.DateField(null=True)
     address = models.CharField(max_length=300, null=True)
     contact_number = models.CharField(max_length=30, null=True)
@@ -63,7 +59,7 @@ class User(AbstractUser):
 class College(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=150)
-    email = models.EmailField()
+    email = models.EmailField(unique=True)
     address = models.CharField(max_length=300)
     contact_number = models.CharField(max_length=30)
     reviews = models.ManyToManyField('Review', related_name='colleges')
@@ -103,6 +99,7 @@ class Review(models.Model):
     comment = models.CharField(max_length=300)
     reviewer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     type = models.CharField(max_length=30, blank=True)
+    date = models.DateField(default=datetime.now, blank=True)
 
 
 class Reply(models.Model):
@@ -110,3 +107,4 @@ class Reply(models.Model):
     review = models.ForeignKey(Review, on_delete=models.CASCADE)
     replier = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     comment = models.CharField(max_length=300)
+    date = models.DateField(default=datetime.now, blank=True)

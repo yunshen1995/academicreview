@@ -3,7 +3,7 @@ function editCollegeController($scope, $http, $rootScope, $route, $location, $md
 	$scope.check.mainpage = false;
 	$scope.selected = {};
 
-	$http.get('/college').then(function (data) {
+	$http.get('api/v1/colleges/').then(function (data) {
 		$scope.colleges = data.data;
 	});
 
@@ -19,7 +19,7 @@ function editCollegeController($scope, $http, $rootScope, $route, $location, $md
 	};
 
 	$scope.updateCollege = function (college) {
-		$http.put('/college/'+college._id,college).then(function () {
+		$http.put('api/v1/colleges/'+college.id+'/',college).then(function () {
 			var alert = $mdDialog.alert()
 				.title('College Updated')
 				.ariaLabel('Lucky day')
@@ -44,7 +44,7 @@ function editCollegeController($scope, $http, $rootScope, $route, $location, $md
 			.ok('Confirm');
 
 		$mdDialog.show(confirm).then(function() {
-			$http.delete('/college/'+college._id).then(function () {
+			$http.delete('api/v1/colleges/'+college.id+'/').then(function () {
 				$mdDialog.show(alert);
 				$route.reload();
 			});
@@ -53,8 +53,8 @@ function editCollegeController($scope, $http, $rootScope, $route, $location, $md
 		});
 	};
 
-	$scope.getTemplate = function (review) {
-		if (review._id === $scope.selected._id){
+	$scope.getTemplate = function (college) {
+		if (college.id === $scope.selected.id){
 			return 'editcollege';
 		}
 		else {

@@ -7,7 +7,7 @@ function allCollegesController($scope, $http, $location, GoogleImageSearch) {
 		return !(result._index % 3 );
 	};
 
-	$http.get('/college').then(async function (data) {
+	$http.get('api/v1/colleges/').then(async function (data) {
 		$scope.results = data.data;
 		for(var i=0; i<$scope.results.length;i++){
 			await GoogleImageSearch.searchImage($scope.results[i].name+' logo').then((res) => {
@@ -18,7 +18,7 @@ function allCollegesController($scope, $http, $location, GoogleImageSearch) {
 	});
 
 	$scope.go = function(college) {
-		$location.path('/college/'+ college._id);
+		$location.path('/college/'+ college.id);
 	};
 }
 

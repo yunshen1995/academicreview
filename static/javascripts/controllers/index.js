@@ -8,5 +8,5 @@ app.controller('collegeMainController', ['$scope','$http','$rootScope','$route',
 app.controller('allCollegesController', ['$scope','$http','$location','GoogleImageSearch', require('./allcollegescontroller')]);
 app.controller('addCollegeController', ['$scope','$http', '$mdDialog','$location',require('./addcollegecontroller')]);
 app.controller('editCollegeController', ['$scope','$http','$rootScope','$route','$location','$mdDialog', require('./editcollegecontroller')]);
-app.controller('studentProfileController', ['$scope','$http','$rootScope','$location','$route','$mdDialog','moment', require('./studentprofilecontroller')]);
+app.controller('studentProfileController', ['$scope','$http','$rootScope','$location','$route','$mdDialog','moment','AuthenticationService', require('./studentprofilecontroller')]);
 app.controller('verifyEmailController', ['$scope','$location','$http','$routeParams', require('./verifyemailcontroller')]);

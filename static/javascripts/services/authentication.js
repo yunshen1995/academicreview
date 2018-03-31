@@ -33,7 +33,7 @@
                     // login successful if there's a token in the response
                     if (response.data.token) {
                         // store username and token in local storage to keep user logged in between page refreshes
-                        $localStorage.currentUser = { username: username, token: response.data.token, first_name:response.data.user.first_name, last_name:response.data.user.last_name };
+                        $localStorage.currentUser = { id: response.data.user.pk,username: username, token: response.data.token, first_name:response.data.user.first_name, last_name:response.data.user.last_name };
                         $rootScope.$broadcast('loginSuccess');
 
                         // add jwt token to auth header for all requests made by the $http service

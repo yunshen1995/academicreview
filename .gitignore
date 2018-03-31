@@ -3,5 +3,4 @@
 .idea/
 /node_modules
 /static/build
-/AcademicReview/__pycache__
-academic/__pycache__/
+__pycache__/
