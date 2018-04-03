@@ -4,3 +4,5 @@
 /node_modules
 /static/build
 __pycache__/
+AcademicReview/__pycache__/
+academic/__pycache__/

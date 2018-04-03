@@ -38,6 +38,7 @@
 			<textarea ng-model="comment" ng-disabled="!currentUser" required></textarea>
 			<button ng-disabled="!currentUser" ng-click="addReview()" style="margin-top:5px;" class="button special2">Submit</button>
 			<strong ng-show="!currentUser">Please Sign In to Add Review! </strong>
+			<strong ng-show="profane">Profane words detected! Please change the words being used before submit</strong>
 		</div>
 	</section>
 

@@ -2,6 +2,8 @@
 function collegeMainController($scope, $http, $rootScope, $route, $routeParams, $mdDialog, $location, GoogleImageSearch, wikipediaFactory, $sce, moment) {
 
     var gis = require('g-i-s');
+    var Filter = require('bad-words');
+    var filter = new Filter();
     $scope.check.mainpage = false;
 
     $scope.icon = '';
@@ -15,6 +17,12 @@ function collegeMainController($scope, $http, $rootScope, $route, $routeParams, 
 
     $scope.addreviewrating = 1;
     $scope.comment = '';
+    $scope.profane = false;
+    $scope.$watch('comment',function (newValue) {
+        $scope.comment = filter.clean(newValue);
+        $scope.profane = newValue.includes('***');
+    });
+
     $scope.overviewtab = function () {
         $scope.tab = true;
         $scope.show = true;
@@ -109,12 +117,12 @@ function collegeMainController($scope, $http, $rootScope, $route, $routeParams, 
         }
     });
 
-    $http.get('api/v1/colleges/'+collegeid+'/').then(function (data) {
+    $http.get('api/v1/colleges/'+collegeid+'/').then(async function (data) {
 
         var college = data.data;
         $scope.college = college;
 
-        GoogleImageSearch.searchImage(college.name+' logo').then((res) => {
+        await GoogleImageSearch.searchImage(college.name+' logo').then((res) => {
             $scope.icon = res[0];
         });
 
@@ -138,9 +146,11 @@ function collegeMainController($scope, $http, $rootScope, $route, $routeParams, 
                         break;
                     }
                 }
-                $scope.image= {
-                    'background-image': 'url(\'stylesheets/images/light-bl.svg\'), url(\'stylesheets/images/light-br.svg\'), url(\'stylesheets/images/overlay.png\'), url(\''+ imagepath +'\')'
-                };
+                $scope.$apply(function () {
+                    $scope.image= {
+                        'background-image': 'url(\'stylesheets/images/light-bl.svg\'), url(\'stylesheets/images/light-br.svg\'), url(\'stylesheets/images/overlay.png\'), url(\''+ imagepath +'\')'
+                    };
+                });
             }
         }
     });
@@ -163,6 +173,13 @@ function collegeMainController($scope, $http, $rootScope, $route, $routeParams, 
         }else if(reviewdetails.comment === ''){
             alert = $mdDialog.alert()
                 .title('Comment is Required for Adding Review')
+                .ariaLabel('Lucky day')
+                .ok('Confirm');
+            $mdDialog.show(alert);
+        }else if($scope.profane){
+            alert = $mdDialog.alert()
+                .title('Profane words detected')
+                .textContent('Please change the words being used before submit!')
                 .ariaLabel('Lucky day')
                 .ok('Confirm');
             $mdDialog.show(alert);
