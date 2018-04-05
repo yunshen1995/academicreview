@@ -62,6 +62,9 @@ app.config(['$httpProvider', '$routeProvider', '$sceDelegateProvider', function 
     }).when('/verify-email/:key', {
         templateUrl: 'static/pages/verifyemail.ejs',
         controller: 'verifyEmailController'
+    }).when('/password-reset/confirm/:uidb64/:token', {
+        templateUrl: 'static/pages/passwordreset.ejs',
+        controller: 'passwordResetController'
     });
 
     $sceDelegateProvider.resourceUrlWhitelist(['self', 'https://en.wikipedia.org/**', 'https://www.google.com/']);

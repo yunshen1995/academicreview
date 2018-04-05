@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.conf.urls import url, include
 from rest_framework.routers import DefaultRouter
-from allauth.account.views import confirm_email
+from allauth.account.views import confirm_email, password_reset_from_key
 from rest_framework_jwt.views import verify_jwt_token
 from academic.views import UserViewSet, CollegeViewSet, CourseViewSet, ReplyViewSet, ReviewViewSet, IndexView
 
@@ -37,5 +37,8 @@ urlpatterns = [
     url(r'^api/v1/account/', include('allauth.urls')),
     url(r'^api/v1/registration', include('rest_auth.registration.urls')),
     url(r'^api/v1/account-confirm-email/(?P<key>[-:\w]+)/$',confirm_email, name='account_confirm_email'),
+    url(r'^password-reset/confirm/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
+        password_reset_from_key,
+        name='password_reset_confirm'),
     url('^.*$', IndexView.as_view(), name='index'),
 ]
