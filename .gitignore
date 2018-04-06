@@ -4,3 +4,4 @@
 /node_modules
 /static/build
 **/__pycache__
+/.env
