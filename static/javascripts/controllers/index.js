@@ -11,3 +11,4 @@ app.controller('editCollegeController', ['$scope','$http','$rootScope','$route',
 app.controller('studentProfileController', ['$scope','$http','$rootScope','$location','$route','$mdDialog','moment','AuthenticationService', require('./studentprofilecontroller')]);
 app.controller('verifyEmailController', ['$scope','$location','$http','$routeParams', require('./verifyemailcontroller')]);
 app.controller('passwordResetController', ['$scope','$location','$http','$routeParams','$mdDialog', require('./passwordresetcontroller')]);
+app.controller('forgotPasswordController', ['$scope','$location','$http','$routeParams','$mdDialog', require('./forgotpasswordcontroller')]);

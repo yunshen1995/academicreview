@@ -28,6 +28,7 @@ var app = angular.module('AcademicReview', ['ui.router', 'ngRoute', 'ngStorage',
 
 require('./controllers/index');
 require('./services/authentication');
+require('./services/loading');
 require('./plugin/googleImage.js');
 
 app.config(['$httpProvider', '$routeProvider', '$sceDelegateProvider', function ($httpProvider, $routeProvider, $sceDelegateProvider) {
@@ -65,6 +66,9 @@ app.config(['$httpProvider', '$routeProvider', '$sceDelegateProvider', function 
     }).when('/password-reset/confirm/:uidb64/:token', {
         templateUrl: 'static/pages/passwordreset.ejs',
         controller: 'passwordResetController'
+    }).when('/forgot-password', {
+        templateUrl: 'static/pages/forgotpassword.ejs',
+        controller: 'forgotPasswordController'
     });
 
     $sceDelegateProvider.resourceUrlWhitelist(['self', 'https://en.wikipedia.org/**', 'https://www.google.com/']);
