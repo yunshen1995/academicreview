@@ -96,15 +96,15 @@ class StudentCourse(models.Model):
 class Review(models.Model):
     id = models.AutoField(primary_key=True)
     rating = models.IntegerField()
-    comment = models.CharField(max_length=300)
+    comment = models.CharField(max_length=3000)
     reviewer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     type = models.CharField(max_length=30, blank=True)
-    date = models.DateField(default=datetime.now, blank=True)
+    date = models.DateTimeField(default=datetime.now, blank=True)
 
 
 class Reply(models.Model):
     id = models.AutoField(primary_key=True)
     review = models.ForeignKey(Review, on_delete=models.CASCADE)
     replier = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    comment = models.CharField(max_length=300)
-    date = models.DateField(default=datetime.now, blank=True)
+    comment = models.CharField(max_length=3000)
+    date = models.DateTimeField(default=datetime.now, blank=True)

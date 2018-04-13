@@ -162,6 +162,11 @@ class UserViewSet(viewsets.ModelViewSet):
                 r.delete()
         return Response({"message": "Successfully Deleted Review From User"})
 
+    @detail_route(methods=['get'], url_path='review/(?P<review_id>[0-9]+)/replies')
+    def all_reply(self, request, pk=None, review_id=None):
+        reply = Reply.objects.filter(review=review_id)
+        return Response(reply.values())
+
 
 class CollegeViewSet(viewsets.ModelViewSet):
     queryset = College.objects.all()
@@ -241,6 +246,11 @@ class CollegeViewSet(viewsets.ModelViewSet):
             if str(r.id) == review_id:
                 r.delete()
         return Response({"message": "Successfully Deleted Review From College"})
+
+    @detail_route(methods=['get'], url_path='review/(?P<review_id>[0-9]+)/replies')
+    def all_reply(self, request, pk=None, review_id=None):
+        reply = Reply.objects.filter(review=review_id)
+        return Response(reply.values())
 
 
 class CourseViewSet(viewsets.ModelViewSet):

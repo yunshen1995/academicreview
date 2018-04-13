@@ -57,7 +57,27 @@
     <td>
         <jk-rating-stars rating="review.rating" read-only="readOnly"></jk-rating-stars>
         <strong style="padding-left:5px"><span ng-bind="review.comment"></span></strong>
-        <blockquote style="font-size: 14px;">Reviewed by <span ng-bind="review.reviewerName"></span> on <span ng-bind="review.date"></span></blockquote>
+        <blockquote style="font-size: 14px; margin-bottom: 0">Reviewed by <span ng-bind="review.reviewerName"></span> on <span ng-bind="review.date"></span></blockquote>
+        <table>
+            <tr ng-repeat="reply in review.replies" style="border-bottom: 0;">
+                <td style="padding: 0 1em 0 1em">
+                    <strong style="padding-left:5px"><span ng-bind="reply.comment"></span></strong>
+                    <blockquote style="font-size: 14px; margin-bottom: 0">Replied by <span ng-bind="reply.replierName"></span> on <span ng-bind="reply.date"></span></blockquote>
+                </td>
+                <td ng-show="showDelete(reply.replier_id)">
+                    <md-button class="md-fab md-mini" aria-label="Use Android" ng-click="deleteReply($event,reply)">
+                        <md-icon class="editicon" md-svg-src="/static/images/icons/delete.svg"></md-icon>
+                    </md-button>
+                </td>
+            </tr>
+        </table>
+        <md-button ng-show="currentUser" ng-click="review.showreply()" class="md-raised md-primary">Reply</md-button>
+        <md-input-container class="md-block" ng-show="review.showreplycheck">
+            <label>Reply</label>
+            <textarea ng-model="review.replytxt" aria-label="textarea" md-maxlength="3000" md-select-on-focus required></textarea>
+            <md-button ng-click="addReply(review.id, review.replytxt)" class="md-raised">Submit</md-button>
+            <strong ng-show="profane2">Profane words detected! Please change the words being used before submit</strong>
+        </md-input-container>
     </td>
     <td ng-show="showEditDelete(review.reviewer_id)">
         <md-button class="md-fab md-primary" aria-label="Use Android" ng-click="editReview(review)">

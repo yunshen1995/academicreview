@@ -18,6 +18,7 @@ function collegeMainController($scope, $http, $rootScope, $route, $routeParams, 
     $scope.addreviewrating = 1;
     $scope.comment = '';
     $scope.profane = false;
+    $scope.profane2 = false;
     $scope.$watch('comment',function (newValue) {
         $scope.comment = filter.clean(newValue);
         $scope.profane = newValue.includes('***');
@@ -34,6 +35,13 @@ function collegeMainController($scope, $http, $rootScope, $route, $routeParams, 
     };
 
     $scope.showEditDelete = function (studentid) {
+        if($rootScope.currentUser)
+            return $rootScope.currentUser.id === studentid;
+        else
+            return false;
+    };
+
+    $scope.showDelete = function (studentid) {
         if($rootScope.currentUser)
             return $rootScope.currentUser.id === studentid;
         else
@@ -87,6 +95,46 @@ function collegeMainController($scope, $http, $rootScope, $route, $routeParams, 
         });
     };
 
+    $scope.addReply = function(reviewid, reply){
+        var replydetails = {
+            review: reviewid,
+            comment: reply,
+            replier: $rootScope.currentUser.id
+        };
+        $http.post('api/v1/replies/',replydetails).then(function () {
+            var alert = $mdDialog.alert()
+                .title('Reply Added')
+                .ariaLabel('Lucky day')
+                .ok('Confirm');
+            $mdDialog.show(alert);
+            $route.reload();
+        });
+    };
+
+    $scope.deleteReply = function (ev,reply) {
+        var confirm = $mdDialog.confirm()
+            .title('Delete Reply')
+            .textContent('Would you like to delete reply?')
+            .ariaLabel('Lucky day')
+            .targetEvent(ev)
+            .ok('Confirm')
+            .cancel('Cancel');
+
+        var alert = $mdDialog.alert()
+            .title('Reply Deleted')
+            .ariaLabel('Lucky day')
+            .ok('Confirm');
+
+        $mdDialog.show(confirm).then(function() {
+            $http.delete('api/v1/replies/'+reply.id+'/').then(function () {
+                $mdDialog.show(alert);
+                $route.reload();
+            });
+        }, function() {
+
+        });
+    };
+
     $scope.getTemplate = function (review) {
         if (review.id === $scope.selected.id){
             return 'edit';
@@ -106,14 +154,38 @@ function collegeMainController($scope, $http, $rootScope, $route, $routeParams, 
         if(reviews.length > 0){
             for(var i=0; i<reviews.length;i++){
                 var review = reviews[i];
-                review.date = moment(review.date, moment.ISO_8601).format('YYYY-MM-DD HH:mm');
+                review.replytxt = '';
+                review.date = moment(review.date, moment.ISO_8601).utcOffset(0).format('YYYY-MM-DD HH:mm');
                 count += review.rating;
+                await $http.get('api/v1/colleges/'+ collegeid +'/review/'+ review.id +'/replies/').then(async function (data) {
+                    review.replies = data.data;
+                    for(var i=0; i<review.replies.length;i++){
+                        var reply = review.replies[i];
+                        reply.date = moment(reply.date, moment.ISO_8601).utcOffset(0).format('YYYY-MM-DD HH:mm');
+                        await $http.get('api/v1/users/'+ reply.replier_id+'/').then(function (data) {
+                            reply.replierName = data.data.first_name +' '+ data.data.last_name;
+                        });
+                    }
+                });
                 await $http.get('api/v1/users/'+ review.reviewer_id+'/').then(function (data) {
                     review.reviewerName = data.data.first_name +' '+ data.data.last_name;
                 });
             }
             $scope.rating = (count/reviews.length).toFixed(1);
             $scope.reviews = reviews;
+
+            for (var j = 0; j <= $scope.reviews.length; j++) {
+                watch(j)
+            }
+            function watch(loop){
+                $scope.$watch('reviews['+ loop +'].replytxt',function (newValue) {
+                    $scope.reviews[loop].replytxt = filter.clean(newValue);
+                    $scope.profane2 = newValue.includes('***');
+                });
+                $scope.reviews[loop].showreply = function(){
+                    $scope.reviews[loop].showreplycheck = !$scope.reviews[loop].showreplycheck;
+                };
+            }
         }
     });
 
