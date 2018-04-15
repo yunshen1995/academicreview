@@ -1,7 +1,9 @@
+import PyPDF2, io, logger
 from rest_framework import serializers
+from drf_extra_fields.fields import Base64FileField
 from django.contrib.auth import update_session_auth_hash
 from rest_auth.registration.serializers import RegisterSerializer
-from .models import User, College, Course, StudentCourse, Reply, Review
+from .models import User, College, Course, StudentCourse, Reply, Review, CollegeApplication
 
 
 class StudentCourseSerializer(serializers.ModelSerializer):
@@ -234,3 +236,24 @@ class CourseSerializer(serializers.ModelSerializer):
                 instance.reviews.add(r1.id)
         instance.save()
         return instance
+
+
+class PDFBase64File(Base64FileField):
+    ALLOWED_TYPES = ['pdf']
+
+    def get_file_extension(self, filename, decoded_file):
+        try:
+            PyPDF2.PdfFileReader(io.BytesIO(decoded_file))
+        except PyPDF2.utils.PdfReadError as e:
+            logger.warning(e)
+        else:
+            return 'pdf'
+
+
+class CollegeApplicationSerializer(serializers.ModelSerializer):
+    courses = PDFBase64File()
+
+    class Meta:
+        model = CollegeApplication
+        fields = ('id', 'name', 'email', 'address', 'contact_number', 'applied', 'notification', 'courses')
+

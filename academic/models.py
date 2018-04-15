@@ -108,3 +108,14 @@ class Reply(models.Model):
     replier = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     comment = models.CharField(max_length=3000)
     date = models.DateTimeField(default=datetime.now, blank=True)
+
+
+class CollegeApplication(models.Model):
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=150)
+    email = models.EmailField(unique=True)
+    address = models.CharField(max_length=300)
+    contact_number = models.CharField(max_length=30)
+    applied = models.DateTimeField(auto_now_add=True)
+    notification = models.BooleanField(default=True)
+    courses = models.FileField()

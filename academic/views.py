@@ -1,7 +1,9 @@
 from rest_framework import permissions,viewsets
-from .models import User, College, Course, Reply, Review, StudentCourse
-from .serializers import UserSerializer, CollegeSerializer, ReplySerializer, ReviewSerializer, CourseSerializer, StudentCourseSerializer
-from rest_framework.decorators import detail_route
+from rest_framework.parsers import FormParser, MultiPartParser, JSONParser
+from .models import User, College, Course, Reply, Review, StudentCourse, CollegeApplication
+from .serializers import UserSerializer, CollegeSerializer, ReplySerializer, ReviewSerializer, CourseSerializer, \
+    StudentCourseSerializer, CollegeApplicationSerializer
+from rest_framework.decorators import detail_route, list_route
 from rest_framework.response import Response
 from rest_framework.exceptions import ParseError
 from .permissions import IsAccountOwner
@@ -171,6 +173,21 @@ class UserViewSet(viewsets.ModelViewSet):
 class CollegeViewSet(viewsets.ModelViewSet):
     queryset = College.objects.all()
     serializer_class = CollegeSerializer
+
+    @list_route(methods=['post'], url_path='search')
+    def search(self, request):
+        college = College.objects.filter(name__icontains=request.data['keyword'])
+        if not college:
+            colleges = College.objects.all()
+            for c in colleges:
+                abbr = ""
+                for i in c.name.split():
+                    if i[0].isupper():
+                        abbr += i[0]
+                if abbr == request.data['keyword'].upper():
+                    college = colleges.filter(id=c.id)
+                    break
+        return Response(college.values())
 
     @detail_route(methods=['get', 'post'], url_path='review')
     def review(self, request, pk=None):
@@ -342,3 +359,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
 
+
+class CollegeApplicationViewSet(viewsets.ModelViewSet):
+    queryset = CollegeApplication.objects.all()
+    serializer_class = CollegeApplicationSerializer

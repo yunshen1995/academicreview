@@ -15,10 +15,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.conf.urls import url, include
+from django.conf import settings
+from django.conf.urls.static import static
 from rest_framework.routers import DefaultRouter
 from allauth.account.views import confirm_email, password_reset_from_key
 from rest_framework_jwt.views import verify_jwt_token
-from academic.views import UserViewSet, CollegeViewSet, CourseViewSet, ReplyViewSet, ReviewViewSet, IndexView
+from academic.views import UserViewSet, CollegeViewSet, CourseViewSet, ReplyViewSet, ReviewViewSet, IndexView, \
+    CollegeApplicationViewSet
 
 router = DefaultRouter()
 router.register(prefix='users', viewset=UserViewSet)
@@ -26,6 +29,7 @@ router.register(prefix='colleges', viewset=CollegeViewSet)
 router.register(prefix='courses', viewset=CourseViewSet)
 router.register(prefix='replies', viewset=ReplyViewSet)
 router.register(prefix='reviews', viewset=ReviewViewSet)
+router.register(prefix='collegeapplication', viewset=CollegeApplicationViewSet)
 
 
 urlpatterns = [
@@ -42,3 +46,6 @@ urlpatterns = [
         name='password_reset_confirm'),
     url('^.*$', IndexView.as_view(), name='index'),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

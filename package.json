@@ -32,6 +32,7 @@
     "mongodb-download": "2.2.3",
     "mongoose": "^4.12.3",
     "morgan": "~1.9.0",
+    "ng-file-model": "0.0.5",
     "ngstorage": "^0.3.11",
     "npm-run-all": "^4.1.2",
     "serve-favicon": "~2.4.5",

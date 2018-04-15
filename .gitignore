@@ -3,6 +3,7 @@
 .idea/
 /node_modules
 /static/build
+/static/media
 **/__pycache__
 /.env
 

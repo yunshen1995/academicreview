@@ -1,0 +1,61 @@
+<!-- Main -->
+<article id="main">
+
+    <!-- One -->
+    <section class="container">
+        <!-- Content -->
+        <div class="content">
+            <div class="form">
+                <div class="tab-content">
+                    <div id="login">
+                        <h2>College Application</h2>
+
+                        <form name="addCollegeForm" class="form-horizontal" method="post"
+                              ng-submit="submit()" form-autofill-fix>
+
+                            <div class="field-wrap">
+                                <label>
+                                    College Name<span class="req">*</span>
+                                </label>
+                                <input type="text" name="name" ng-model="credentials.name" required/>
+                            </div>
+
+                            <div class="field-wrap">
+                                <label>
+                                    Contact Number<span class="req">*</span>
+                                </label>
+                                <input type="text" name="contactno" ng-model="credentials.contact_number" required/>
+                            </div>
+
+                            <div class="field-wrap">
+                                <label>
+                                    Email Address<span class="req">*</span>
+                                </label>
+                                <input type="email" name="email" ng-model="credentials.email" required autocomplete="off"/>
+                            </div>
+
+                            <div class="field-wrap">
+                                <label>
+                                    Address<span class="req">*</span>
+                                </label>
+                                <input type="text" name="address" ng-model="credentials.address" required/>
+                            </div>
+
+                            <div class="field-wrap">
+                                <label>
+                                    Courses <span class="req">(Optional, Format: pdf)</span>
+                                </label>
+                                <input style="border:0;padding:0" type="file" id="file" name="file" ng-file-model="credentials.courses"/>
+                            </div>
+
+                            <button type="submit" class="button button-block">Submit</button>
+
+                        </form>
+                    </div>
+                </div><!-- tab-content -->
+            </div> <!-- /form -->
+        </div>
+
+    </section>
+
+</article>

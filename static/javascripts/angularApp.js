@@ -11,6 +11,7 @@ require('angular-ui-bootstrap');
 require('ngstorage');
 require('angular-csrf-cross-domain');
 require('angular-cookies');
+require('ng-file-model');
 require('moment');
 require('angular-moment');
 require('jquery');
@@ -24,7 +25,8 @@ require('./jquery/util.js');
 require('./jquery/main.js');
 
 var app = angular.module('AcademicReview', ['ui.router', 'ngRoute', 'ngStorage', 'ui.bootstrap', 'ngMaterial',
-    'ngMessages', 'ngSanitize', 'jkAngularRatingStars', 'jtt_wikipedia', 'angularMoment', 'csrf-cross-domain']);
+    'ngMessages', 'ngSanitize', 'jkAngularRatingStars', 'jtt_wikipedia', 'angularMoment', 'csrf-cross-domain',
+    'ng-file-model']);
 
 require('./controllers/index');
 require('./services/authentication');
@@ -69,6 +71,11 @@ app.config(['$httpProvider', '$routeProvider', '$sceDelegateProvider', function 
     }).when('/forgot-password', {
         templateUrl: 'static/pages/forgotpassword.ejs',
         controller: 'forgotPasswordController'
+    }).when('/applycollege', {
+        templateUrl: 'static/pages/applycollege.ejs',
+        controller: 'applyCollegeController'
+    }).otherwise({
+        redirectTo: '/'
     });
 
     $sceDelegateProvider.resourceUrlWhitelist(['self', 'https://en.wikipedia.org/**', 'https://www.google.com/']);

@@ -59,7 +59,6 @@ app.factory('GoogleImageSearch', function (){
 
 		// Maps Image Sources
 		return images.map( (imgDiv) => {
-			console.log(imgDiv.getAttribute('href'));
 			return imgDiv.childNodes[0].src;
 		} );
 	};
