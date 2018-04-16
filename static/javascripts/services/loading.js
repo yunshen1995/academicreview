@@ -6,7 +6,7 @@
         return {
             restrict: 'E',
             replace:true,
-            template: '<div class="loading"><img src="http://www.nasa.gov/multimedia/videogallery/ajax-loader.gif" width="50" height="50" /></div>',
+            template: '<div class="loading" layout="row" layout-sm="column" layout-align="space-around"><md-progress-circular md-mode="indeterminate"></md-progress-circular></div>',
             link: function (scope, element, attr) {
                 scope.$watch('loading', function (val) {
                     if (val)

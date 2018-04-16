@@ -1,6 +1,6 @@
 var app = angular.module('AcademicReview');
 
-app.controller('mainController', ['$scope','$location','$localStorage','$rootScope','$window','$http','$mdDialog','AuthenticationService', require('./maincontroller')]);
+app.controller('mainController', ['$scope','$location','$route','$localStorage','$rootScope','$window','$http','$mdDialog','$mdPanel','moment','AuthenticationService', require('./maincontroller')]);
 app.controller('searchResultController', ['$scope','$http','$location','$routeParams','GoogleImageSearch', require('./searchresultcontroller')]);
 app.controller('signInController', ['$scope','$location' ,'AuthenticationService','$mdDialog', require('./signincontroller')]);
 app.controller('signUpController', ['$scope','$http','$rootScope','$location','$mdDialog', require('./signupcontroller')]);
@@ -13,3 +13,4 @@ app.controller('verifyEmailController', ['$scope','$location','$http','$routePar
 app.controller('passwordResetController', ['$scope','$location','$http','$routeParams','$mdDialog', require('./passwordresetcontroller')]);
 app.controller('forgotPasswordController', ['$scope','$location','$http','$routeParams','$mdDialog', require('./forgotpasswordcontroller')]);
 app.controller('applyCollegeController', ['$scope','$http', '$mdDialog','$location',require('./applycollegecontroller')]);
+app.controller('adminPanelController', ['$scope','$http','$location', require('./adminpanelcontroller')]);

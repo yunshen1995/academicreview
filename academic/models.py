@@ -118,4 +118,15 @@ class CollegeApplication(models.Model):
     contact_number = models.CharField(max_length=30)
     applied = models.DateTimeField(auto_now_add=True)
     notification = models.BooleanField(default=True)
+    solved = models.BooleanField(default=True)
     courses = models.FileField()
+
+
+class Report(models.Model):
+    id = models.AutoField(primary_key=True)
+    review = models.ForeignKey(Review, on_delete=models.CASCADE)
+    reason = models.CharField(max_length=30, null=True)
+    reporter = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
+    notification = models.BooleanField(default=True)
+    reported = models.DateTimeField(auto_now_add=True)
+    solved = models.BooleanField(default=True)

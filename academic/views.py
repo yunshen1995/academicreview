@@ -1,8 +1,8 @@
 from rest_framework import permissions,viewsets
-from rest_framework.parsers import FormParser, MultiPartParser, JSONParser
-from .models import User, College, Course, Reply, Review, StudentCourse, CollegeApplication
+from rest_framework.views import APIView
+from .models import User, College, Course, Reply, Review, StudentCourse, CollegeApplication, Report
 from .serializers import UserSerializer, CollegeSerializer, ReplySerializer, ReviewSerializer, CourseSerializer, \
-    StudentCourseSerializer, CollegeApplicationSerializer
+    StudentCourseSerializer, CollegeApplicationSerializer, ReportSerializer
 from rest_framework.decorators import detail_route, list_route
 from rest_framework.response import Response
 from rest_framework.exceptions import ParseError
@@ -363,3 +363,17 @@ class ReviewViewSet(viewsets.ModelViewSet):
 class CollegeApplicationViewSet(viewsets.ModelViewSet):
     queryset = CollegeApplication.objects.all()
     serializer_class = CollegeApplicationSerializer
+
+
+class ReportViewSet(viewsets.ModelViewSet):
+    queryset = Report.objects.all()
+    serializer_class = ReportSerializer
+
+
+class Notification(APIView):
+    def get(self, request):
+        data = {
+            'application': CollegeApplicationSerializer(CollegeApplication.objects.filter(notification=True), many=True).data,
+            'report': ReportSerializer(Report.objects.filter(notification=True), many=True).data
+        }
+        return Response(data)

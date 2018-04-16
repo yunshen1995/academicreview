@@ -23,17 +23,19 @@ require('./jquery/jquery.scrolly.min.js');
 require('./jquery/jquery.scrollgress.min.js');
 require('./jquery/util.js');
 require('./jquery/main.js');
+require('./angular/angular-material-badge.min');
 
 var app = angular.module('AcademicReview', ['ui.router', 'ngRoute', 'ngStorage', 'ui.bootstrap', 'ngMaterial',
     'ngMessages', 'ngSanitize', 'jkAngularRatingStars', 'jtt_wikipedia', 'angularMoment', 'csrf-cross-domain',
-    'ng-file-model']);
+    'ng-file-model', 'ngMdBadge']);
 
 require('./controllers/index');
 require('./services/authentication');
 require('./services/loading');
-require('./plugin/googleImage.js');
+require('./plugin/googleImage');
 
-app.config(['$httpProvider', '$routeProvider', '$sceDelegateProvider', function ($httpProvider, $routeProvider, $sceDelegateProvider) {
+app.config(['$httpProvider', '$routeProvider', '$sceDelegateProvider','$interpolateProvider',
+    function ($httpProvider, $routeProvider, $sceDelegateProvider) {
 
     $routeProvider.when('/', {
         templateUrl: 'static/pages/main.ejs',
@@ -74,6 +76,9 @@ app.config(['$httpProvider', '$routeProvider', '$sceDelegateProvider', function 
     }).when('/applycollege', {
         templateUrl: 'static/pages/applycollege.ejs',
         controller: 'applyCollegeController'
+    }).when('/adminpanel', {
+        templateUrl: 'static/pages/adminpanel.ejs',
+        controller: 'adminPanelController'
     }).otherwise({
         redirectTo: '/'
     });
@@ -93,11 +98,19 @@ function authentication($rootScope, $http, $location, $localStorage) {
     }
 
     // redirect to login page if not logged in and trying to access a restricted page
-    // $rootScope.$on('$locationChangeStart', function (event, next, current) {
-    //     var publicPages = ['/login'];
-    //     var restrictedPage = publicPages.indexOf($location.path()) === -1;
-    //     if (restrictedPage && !$localStorage.currentUser) {
-    //         $location.path('/');
-    //     }
-    // });
+    $rootScope.$on('$routeChangeStart', function (event, next, current) {
+        var publicPages = ['/signin','/','/colleges','/college/','/signup','/college/search/',
+            '/verify-email','/password-reset/confirm','/forgot-password','/applycollege'];
+        var adminPages = ['/addcollege', '/editcollege'];
+        var allowedPage = publicPages.indexOf($location.path()) !== -1 ||
+            publicPages.indexOf($location.path().replace(/\d/g,'')) !== -1 ||
+            publicPages.indexOf('/'+$location.path().split('/')[1]) !== -1 ||
+            publicPages.indexOf('/'+$location.path().split('/')[1]+'/'+$location.path().split('/')[2]) !== -1;
+        if (!allowedPage && !$localStorage.currentUser) {
+            $location.path('/');
+        }
+        if(adminPages.indexOf($location.path()) !== -1 && !$localStorage.currentUser.is_superuser){
+            $location.path('/');
+        }
+    });
 }

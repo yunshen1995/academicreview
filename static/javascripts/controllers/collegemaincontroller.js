@@ -11,6 +11,8 @@ function collegeMainController($scope, $http, $rootScope, $route, $routeParams, 
     $scope.rating = 0;
     $scope.show = true;
     $scope.tab = true;
+    $scope.checkreport = false;
+    $scope.isOpen = false;
     $scope.wiki = 'No Information';
     $scope.selected = {};
     var collegeid = $routeParams.param;
@@ -19,6 +21,7 @@ function collegeMainController($scope, $http, $rootScope, $route, $routeParams, 
     $scope.comment = '';
     $scope.profane = false;
     $scope.profane2 = false;
+    $scope.grammar = false;
     $scope.$watch('comment',function (newValue) {
         $scope.comment = filter.clean(newValue);
         $scope.profane = newValue.includes('***');
@@ -95,6 +98,50 @@ function collegeMainController($scope, $http, $rootScope, $route, $routeParams, 
         });
     };
 
+    $scope.reportReview = function (ev,review) {
+        if($rootScope.currentUser){
+            $scope.reporter = $rootScope.currentUser.id
+        }else{
+            $scope.reporter = null
+        }
+        var confirm = $mdDialog.show({
+            controller: DialogController,
+            templateUrl: 'static/pages/reportradio.ejs',
+            parent: angular.element(document.body),
+            targetEvent: ev,
+            clickOutsideToClose:true
+        }).then(function(answer) {
+            var report = {
+                review: review.id,
+                reporter: $scope.reporter,
+                reason: answer
+            };
+            $http.post('api/v1/report/',report).then(function () {
+                $mdDialog.show(alert);
+            });
+        }, function() {
+
+        });
+
+        function DialogController($scope, $mdDialog) {
+            $scope.hide = function() {
+                $mdDialog.hide();
+            };
+            $scope.cancel = function() {
+                $mdDialog.cancel();
+            };
+            $scope.answer = function(answer) {
+                $mdDialog.hide(answer);
+            };
+        }
+
+        var alert = $mdDialog.alert()
+            .title('Thank you for reporting')
+            .htmlContent('<p>Thank you for taking time to report the review. <br> Our team will inspect the review and handle it as soon as possible.</p>')
+            .ariaLabel('Lucky day')
+            .ok('Confirm');
+    };
+
     $scope.addReply = function(reviewid, reply){
         var replydetails = {
             review: reviewid,
@@ -155,13 +202,13 @@ function collegeMainController($scope, $http, $rootScope, $route, $routeParams, 
             for(var i=0; i<reviews.length;i++){
                 var review = reviews[i];
                 review.replytxt = '';
-                review.date = moment(review.date, moment.ISO_8601).utcOffset(0).format('YYYY-MM-DD HH:mm');
+                review.date = moment(review.date, moment.ISO_8601).format('YYYY-MM-DD HH:mm');
                 count += review.rating;
                 await $http.get('api/v1/colleges/'+ collegeid +'/review/'+ review.id +'/replies/').then(async function (data) {
                     review.replies = data.data;
                     for(var i=0; i<review.replies.length;i++){
                         var reply = review.replies[i];
-                        reply.date = moment(reply.date, moment.ISO_8601).utcOffset(0).format('YYYY-MM-DD HH:mm');
+                        reply.date = moment(reply.date, moment.ISO_8601).format('YYYY-MM-DD HH:mm');
                         await $http.get('api/v1/users/'+ reply.replier_id+'/').then(function (data) {
                             reply.replierName = data.data.first_name +' '+ data.data.last_name;
                         });
@@ -193,7 +240,6 @@ function collegeMainController($scope, $http, $rootScope, $route, $routeParams, 
 
         var college = data.data;
         $scope.college = college;
-
         await GoogleImageSearch.searchImage(college.name+' logo').then((res) => {
             $scope.icon = res[0];
         });
@@ -204,6 +250,8 @@ function collegeMainController($scope, $http, $rootScope, $route, $routeParams, 
             $scope.wiki = $sce.trustAsHtml(data.data.query.pages[0].extract);
         });
 
+        console.log(college.name)
+
         gis(college.name+' campus', logResults);
         function logResults(error, results) {
             if (error) {
@@ -213,11 +261,12 @@ function collegeMainController($scope, $http, $rootScope, $route, $routeParams, 
                 var images = results;
                 var imagepath;
                 for(var i=0; i<images.length;i++){
-                    if(images[i].width>1920){
+                    if(images[i].width>1366){
                         imagepath = images[i].url;
                         break;
                     }
                 }
+                console.log(imagepath)
                 $scope.$apply(function () {
                     $scope.image= {
                         'background-image': 'url(\'stylesheets/images/light-bl.svg\'), url(\'stylesheets/images/light-br.svg\'), url(\'stylesheets/images/overlay.png\'), url(\''+ imagepath +'\')'

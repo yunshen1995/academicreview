@@ -21,7 +21,7 @@ from rest_framework.routers import DefaultRouter
 from allauth.account.views import confirm_email, password_reset_from_key
 from rest_framework_jwt.views import verify_jwt_token
 from academic.views import UserViewSet, CollegeViewSet, CourseViewSet, ReplyViewSet, ReviewViewSet, IndexView, \
-    CollegeApplicationViewSet
+    CollegeApplicationViewSet, ReportViewSet, Notification
 
 router = DefaultRouter()
 router.register(prefix='users', viewset=UserViewSet)
@@ -30,12 +30,14 @@ router.register(prefix='courses', viewset=CourseViewSet)
 router.register(prefix='replies', viewset=ReplyViewSet)
 router.register(prefix='reviews', viewset=ReviewViewSet)
 router.register(prefix='collegeapplication', viewset=CollegeApplicationViewSet)
+router.register(prefix='report', viewset=ReportViewSet)
 
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^api/v1/', include(router.urls)),
     url(r'^api/v1/', include('rest_framework.urls')),
+    url(r'^api/v1/notification/', Notification.as_view()),
     url(r'^api/v1/jwt/', include('rest_auth.urls')),
     url(r'^api/v1/jwt/api-token-verify/', verify_jwt_token),
     url(r'^api/v1/account/', include('allauth.urls')),

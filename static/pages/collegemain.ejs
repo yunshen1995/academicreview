@@ -24,18 +24,19 @@
 			<div ng-bind-html="wiki">
 			</div>
 			<h2>Contact</h2>
-			<p>Contact Number: {{college.contactno}}</p>
+			<p>Contact Number: {{college.contact_number}}</p>
 			<p>Address: {{college.address}}</p>
 			<p>Email: {{college.email}}</p>
 		</div>
 		<div ng-show="!show">
 			<table class ="review table table-striped table-bordered" align="center" valign="left">
-				<tr ng-repeat="review in reviews" ng-include src="getTemplate(review)">
+				<tr ng-repeat="review in reviews" ng-include src="getTemplate(review)"
+					ng-mouseenter="checkreport=true" ng-mouseleave="checkreport=false">
 				</tr>
 			</table>
 			<h2>Add Review:</h2>
 			<h3>Rating: <jk-rating-stars read-only="!currentUser" rating="addreviewrating" class="my-review-custom-stars"></jk-rating-stars></h3>
-			<textarea ng-model="comment" ng-disabled="!currentUser" required></textarea>
+			<textarea spellcheck="true" id="comment" ng-model="comment" ng-disabled="!currentUser" required></textarea>
 			<button ng-disabled="!currentUser" ng-click="addReview()" style="margin-top:5px;" class="button special2">Submit</button>
 			<strong ng-show="!currentUser">Please Sign In to Add Review! </strong>
 			<strong ng-show="profane">Profane words detected! Please change the words being used before submit</strong>

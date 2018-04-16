@@ -3,7 +3,7 @@ from rest_framework import serializers
 from drf_extra_fields.fields import Base64FileField
 from django.contrib.auth import update_session_auth_hash
 from rest_auth.registration.serializers import RegisterSerializer
-from .models import User, College, Course, StudentCourse, Reply, Review, CollegeApplication
+from .models import User, College, Course, StudentCourse, Reply, Review, CollegeApplication, Report
 
 
 class StudentCourseSerializer(serializers.ModelSerializer):
@@ -49,7 +49,7 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('id', 'username', 'email', 'first_name', 'last_name', 'gender', 'dob', 'address',
-                  'contact_number', 'user_type', 'course', 'reviews', 'password', 'confirm_password')
+                  'contact_number', 'user_type', 'course', 'reviews', 'password', 'confirm_password', 'is_superuser')
 
     def create(self, validated_data):
         user = User(
@@ -255,5 +255,10 @@ class CollegeApplicationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CollegeApplication
-        fields = ('id', 'name', 'email', 'address', 'contact_number', 'applied', 'notification', 'courses')
+        fields = ('id', 'name', 'email', 'address', 'contact_number', 'applied', 'notification', 'courses', 'solved')
 
+
+class ReportSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Report
+        fields = ('id', 'review', 'reporter', 'notification', 'reported', 'solved', 'reason')

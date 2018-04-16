@@ -10,10 +10,6 @@ function applyCollegeController($scope, $http, $mdDialog, $location) {
 		}
 	};
 
-	$http.get('api/v1/collegeapplication/').then(function (response) {
-	    console.log(response)
-    });
-
 	$scope.applycollege = function (credentials) {
 	    credentials.courses = credentials.courses.data;
 		$http.post('api/v1/collegeapplication/',credentials).then(function () {

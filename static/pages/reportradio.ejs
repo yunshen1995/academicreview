@@ -1,0 +1,33 @@
+<md-dialog aria-label="Report Review to Admin">
+    <form ng-cloak>
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h2>Report Review to Admin</h2>
+                <span flex></span>
+                <md-button class="md-icon-button" ng-click="cancel()">
+                    <md-icon md-svg-src="/static/images/icons/cancel2.svg" aria-label="Close dialog"></md-icon>
+                </md-button>
+            </div>
+        </md-toolbar>
+
+        <md-dialog-content>
+            <div class="md-dialog-content">
+                <md-radio-group ng-model="reason">
+                    <p>Reason of Report: <span class="radioValue">{{ reason }}</span></p>
+                    <md-radio-button value="Spamming">Spamming</md-radio-button>
+                    <md-radio-button value="Advertising">Advertising</md-radio-button>
+                    <md-radio-button value="Profanity">Profanity</md-radio-button>
+                    <md-radio-button value="Inappropriate Content/Abusive">Inappropriate Content/Abusive</md-radio-button>
+                    <md-radio-button value="Others">Others</md-radio-button>
+
+                </md-radio-group>
+            </div>
+        </md-dialog-content>
+
+        <md-dialog-actions layout="row">
+            <md-button ng-click="answer(reason)">
+                Submit
+            </md-button>
+        </md-dialog-actions>
+    </form>
+</md-dialog>

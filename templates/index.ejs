@@ -15,16 +15,29 @@
     <!-- Header -->
     <header id="header" ng-class="{'alt':check.mainpage}">
         <h1 id="logo"><a href="/" ng-click="home()" style="border-top: 5px double white;border-bottom: 5px double white;padding: 8px 0">Academic Review</a></h1>
-        <nav id="nav">
+        <nav id="nav" style="height:0">
             <ul>
                 <li ng-if="currentUser" class="current"><a href="#!/studentprofile">Welcome, <span ng-bind="currentUser.first_name"></span></a></li>
                 <li class="submenu">
                     <a href="#">Colleges</a>
                     <ul>
                         <li><a href="#!/colleges">All Colleges</a></li>
-                        <li><a href="#!/addcollege">Modify College</a></li>
                         <li><a href="#!/applycollege">College Application</a></li>
                     </ul>
+                </li>
+                <li class="submenu">
+                    <a href="#" ng-if="currentUser.is_superuser">Admin</a>
+                    <ul>
+                        <li><a href="#!/adminpanel">Admin Panel</a></li>
+                        <li><a href="#!/addcollege">Modify College</a></li>
+                    </ul>
+                </li>
+                <li ng-if="currentUser.is_superuser">
+                    <md-button aria-label="Notification" class="md-icon-button" style="overflow: visible" ng-click="showToolbarMenu($event, notification)"
+                        ng-style="check.mainpage ? {'padding-top':'inherit'}:{'padding-top':'0'}">
+                        <md-icon ng-style="check.mainpage ? {'color':'white'}:{'color':'inherit'}" class="editicon" md-svg-src="/static/images/icons/notifications.svg"></md-icon>
+                        <md-badge ng-style="check.mainpage ? {'position': 'absolute','top':'22px','left':'20px'}:{'position': 'absolute','top':'18px','left':'20px'}"><span ng-bind="badgecount"></span></md-badge>
+                    </md-button>
                 </li>
                 <li><a href="#!/signin" ng-if="!currentUser" ng-click="signin()" class="button special2">Sign In</a></li>
                 <li><a href="#!/signup" ng-if="!currentUser" ng-click="signup()" class="button special">Sign Up</a></li>
@@ -66,7 +79,7 @@
                     <blockquote style="font-size: 14px; margin-bottom: 0">Replied by <span ng-bind="reply.replierName"></span> on <span ng-bind="reply.date"></span></blockquote>
                 </td>
                 <td ng-show="showDelete(reply.replier_id)">
-                    <md-button class="md-fab md-mini" aria-label="Use Android" ng-click="deleteReply($event,reply)">
+                    <md-button class="md-fab md-mini" aria-label="Use Android" ng-click="deleteReply($event,reply)" ng-show="checkreport">
                         <md-icon class="editicon" md-svg-src="/static/images/icons/delete.svg"></md-icon>
                     </md-button>
                 </td>
@@ -75,18 +88,32 @@
         <md-button ng-show="currentUser" ng-click="review.showreply()" class="md-raised md-primary">Reply</md-button>
         <md-input-container class="md-block" ng-show="review.showreplycheck">
             <label>Reply</label>
-            <textarea ng-model="review.replytxt" aria-label="textarea" md-maxlength="3000" md-select-on-focus required></textarea>
+            <textarea spellcheck="true" ng-model="review.replytxt" aria-label="textarea" md-maxlength="3000" md-select-on-focus required></textarea>
             <md-button ng-click="addReply(review.id, review.replytxt)" class="md-raised">Submit</md-button>
             <strong ng-show="profane2">Profane words detected! Please change the words being used before submit</strong>
         </md-input-container>
     </td>
-    <td ng-show="showEditDelete(review.reviewer_id)">
-        <md-button class="md-fab md-primary" aria-label="Use Android" ng-click="editReview(review)">
-            <md-icon class="editicon" md-svg-src="/static/images/icons/edit.svg"></md-icon>
-        </md-button>
-        <md-button class="md-fab md-warn" aria-label="Use Android" ng-click="deleteReview($event,review)">
-            <md-icon class="editicon" md-svg-src="/static/images/icons/delete.svg"></md-icon>
-        </md-button>
+    <td>
+        <md-fab-speed-dial md-open="isOpen" md-direction="down" class="md-scale">
+            <md-fab-trigger>
+                <md-button class="md-icon-button" aria-label="More">
+                    <md-icon md-svg-icon="/static/images/icons/more_vert.svg"></md-icon>
+                </md-button>
+            </md-fab-trigger>
+            <md-fab-actions>
+                <md-button class="md-fab md-primary md-mini" aria-label="Use Android" ng-click="editReview(review)"
+                 ng-show="showEditDelete(review.reviewer_id)">
+                    <md-icon class="editicon" md-svg-src="/static/images/icons/edit.svg"></md-icon>
+                </md-button>
+                <md-button class="md-fab md-warn md-mini" aria-label="Use Android" ng-click="deleteReview($event,review)"
+                 ng-show="showEditDelete(review.reviewer_id)">
+                    <md-icon class="editicon" md-svg-src="/static/images/icons/delete.svg"></md-icon>
+                </md-button>
+                <md-button style="color:white" class="md-fab md-mini" aria-label="Use Android" ng-click="reportReview($event,review)">
+                    <md-icon class="editicon" md-svg-src="/static/images/icons/flag.svg"></md-icon>
+                </md-button>
+            </md-fab-actions>
+        </md-fab-speed-dial>
     </td>
 </script>
 
@@ -94,6 +121,19 @@
     <td>
         <jk-rating-stars rating="review.rating"></jk-rating-stars>
         <input type="text" ng-model=review.comment class="form-control input-sm"/>
+        <table>
+            <tr ng-repeat="reply in review.replies" style="border-bottom: 0;">
+                <td style="padding: 0 1em 0 1em">
+                    <strong style="padding-left:5px"><span ng-bind="reply.comment"></span></strong>
+                    <blockquote style="font-size: 14px; margin-bottom: 0">Replied by <span ng-bind="reply.replierName"></span> on <span ng-bind="reply.date"></span></blockquote>
+                </td>
+                <td ng-show="showDelete(reply.replier_id)">
+                    <md-button class="md-fab md-mini" aria-label="Use Android" ng-click="deleteReply($event,reply)" ng-show="checkreport">
+                        <md-icon class="editicon" md-svg-src="/static/images/icons/delete.svg"></md-icon>
+                    </md-button>
+                </td>
+            </tr>
+        </table>
     </td>
     <td ng-show="showEditDelete(review.reviewer_id)">
         <md-button class="md-fab md-primary" aria-label="Use Android" ng-click="updateReview(review)">
