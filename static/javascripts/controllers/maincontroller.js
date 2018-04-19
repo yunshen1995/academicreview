@@ -33,11 +33,11 @@ function mainController($scope, $location, $route, $localStorage, $rootScope, $w
                 };
 
                 $scope.menuTemplate = '' +
-                    '<div ng-mouseleave="ctrl.closeMenu()" style="background-color: white;overflow: scroll;height:400px; " class="menu-panel" md-whiteframe="6">' +
+                    '<div ng-mouseleave="ctrl.closeMenu()" style="background-color: white;overflow: auto;height:400px; " class="menu-panel" md-whiteframe="6">' +
                     '  <div class="menu-content">' +
                     '       <md-content>' +
                     '           <md-list flex>' +
-                    '               <md-list-item class="md-3-line" ng-repeat="item in ctrl.application" ng-click="null">\n' +
+                    '               <md-list-item class="md-3-line" ng-repeat="item in ctrl.application" ng-click="ctrl.adminapp(item)" href="#!/adminpanel/app">\n' +
                     '                   <img ng-src="/static/images/icons/application.svg" class="md-avatar" alt="{{item.name}}" />\n' +
                     '                   <div class="md-list-item-text" layout="column">\n' +
                     '                       <h3 ng-bind="item.name"></h3>\n' +
@@ -45,7 +45,7 @@ function mainController($scope, $location, $route, $localStorage, $rootScope, $w
                     '                   </div>\n' +
                     '               </md-list-item>' +
                     '               <md-divider></md-divider>' +
-                    '               <md-list-item class="md-3-line" ng-repeat="item in ctrl.report" ng-click="null">\n' +
+                    '               <md-list-item class="md-3-line" ng-repeat="item in ctrl.report" ng-click="ctrl.adminreport(item)" href="#!/adminpanel/report">\n' +
                     '                   <img ng-src="/static/images/icons/flag.svg" class="md-avatar" alt="{{item.name}}" />\n' +
                     '                   <div class="md-list-item-text" layout="column">\n' +
                     '                       <h3 ng-bind="item.reason"></h3>\n' +
@@ -101,7 +101,52 @@ function mainController($scope, $location, $route, $localStorage, $rootScope, $w
                         mdPanelRef && mdPanelRef.close();
                     };
                     this.application =  $scope.application;
-                    this.report = $scope.report
+                    this.report = $scope.report;
+
+                    this.adminapp = function (application) {
+                        $http.patch('api/v1/collegeapplication/'+application.id+'/', {notification:false}).then(function () {
+                            $http.get('api/v1/notification/').then(function (response) {
+                                if(response.data){
+                                    if(response.data.application) {
+                                        for (var i=0;i<response.data.application.length;i++) {
+                                            response.data.application[i].applied = moment(response.data.application[i].applied, moment.ISO_8601).format('YYYY-MM-DD HH:mm');
+                                        }
+                                    }
+                                    if(response.data.report) {
+                                        for (var j=0;j<response.data.report.length;j++) {
+                                            response.data.report[j].reported = moment(response.data.report[j].reported, moment.ISO_8601).format('YYYY-MM-DD HH:mm')
+                                        }
+                                    }
+                                }
+                                $scope.application = response.data.application;
+                                $scope.report = response.data.report;
+                                $scope.badgecount = response.data.application.length + response.data.report.length;
+                            });
+                        });
+                        mdPanelRef && mdPanelRef.close();
+                    };
+                    this.adminreport = function (report) {
+                        $http.patch('api/v1/report/'+report.id+'/', {notification:false}).then(function () {
+                            $http.get('api/v1/notification/').then(function (response) {
+                                if(response.data){
+                                    if(response.data.application) {
+                                        for (var i=0;i<response.data.application.length;i++) {
+                                            response.data.application[i].applied = moment(response.data.application[i].applied, moment.ISO_8601).format('YYYY-MM-DD HH:mm');
+                                        }
+                                    }
+                                    if(response.data.report) {
+                                        for (var j=0;j<response.data.report.length;j++) {
+                                            response.data.report[j].reported = moment(response.data.report[j].reported, moment.ISO_8601).format('YYYY-MM-DD HH:mm')
+                                        }
+                                    }
+                                }
+                                $scope.application = response.data.application;
+                                $scope.report = response.data.report;
+                                $scope.badgecount = response.data.application.length + response.data.report.length;
+                            });
+                        });
+                        mdPanelRef && mdPanelRef.close();
+                    }
                 }
             });
         }

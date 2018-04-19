@@ -21,6 +21,7 @@ require('./plugin/wikipedia.js');
 require('./jquery/jquery.dropotron.min.js');
 require('./jquery/jquery.scrolly.min.js');
 require('./jquery/jquery.scrollgress.min.js');
+require('./jquery/jquery.dataTables.min.js');
 require('./jquery/util.js');
 require('./jquery/main.js');
 require('./angular/angular-material-badge.min');
@@ -76,7 +77,7 @@ app.config(['$httpProvider', '$routeProvider', '$sceDelegateProvider','$interpol
     }).when('/applycollege', {
         templateUrl: 'static/pages/applycollege.ejs',
         controller: 'applyCollegeController'
-    }).when('/adminpanel', {
+    }).when('/adminpanel/:param', {
         templateUrl: 'static/pages/adminpanel.ejs',
         controller: 'adminPanelController'
     }).otherwise({
@@ -99,17 +100,21 @@ function authentication($rootScope, $http, $location, $localStorage) {
 
     // redirect to login page if not logged in and trying to access a restricted page
     $rootScope.$on('$routeChangeStart', function (event, next, current) {
-        var publicPages = ['/signin','/','/colleges','/college/','/signup','/college/search/',
+        var publicPages = ['/signin','/','/colleges','/college/','/signup','/college/search',
             '/verify-email','/password-reset/confirm','/forgot-password','/applycollege'];
-        var adminPages = ['/addcollege', '/editcollege'];
+        var adminPages = ['/addcollege', '/editcollege', '/adminpanel'];
         var allowedPage = publicPages.indexOf($location.path()) !== -1 ||
             publicPages.indexOf($location.path().replace(/\d/g,'')) !== -1 ||
             publicPages.indexOf('/'+$location.path().split('/')[1]) !== -1 ||
             publicPages.indexOf('/'+$location.path().split('/')[1]+'/'+$location.path().split('/')[2]) !== -1;
+        var adminAllowedPage = adminPages.indexOf($location.path()) !== -1 ||
+            adminPages.indexOf($location.path().replace(/\d/g,'')) !== -1 ||
+            adminPages.indexOf('/'+$location.path().split('/')[1]) !== -1 ||
+            adminPages.indexOf('/'+$location.path().split('/')[1]+'/'+$location.path().split('/')[2]) !== -1;
         if (!allowedPage && !$localStorage.currentUser) {
             $location.path('/');
         }
-        if(adminPages.indexOf($location.path()) !== -1 && !$localStorage.currentUser.is_superuser){
+        if(adminAllowedPage && !$localStorage.currentUser.is_superuser){
             $location.path('/');
         }
     });

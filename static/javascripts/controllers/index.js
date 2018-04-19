@@ -13,4 +13,4 @@ app.controller('verifyEmailController', ['$scope','$location','$http','$routePar
 app.controller('passwordResetController', ['$scope','$location','$http','$routeParams','$mdDialog', require('./passwordresetcontroller')]);
 app.controller('forgotPasswordController', ['$scope','$location','$http','$routeParams','$mdDialog', require('./forgotpasswordcontroller')]);
 app.controller('applyCollegeController', ['$scope','$http', '$mdDialog','$location',require('./applycollegecontroller')]);
-app.controller('adminPanelController', ['$scope','$http','$location', require('./adminpanelcontroller')]);
+app.controller('adminPanelController', ['$scope','$http','$timeout','$mdDialog','$route','moment','$routeParams','$rootScope', require('./adminpanelcontroller')]);

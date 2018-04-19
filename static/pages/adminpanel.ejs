@@ -6,8 +6,147 @@
         <!-- Content -->
         <div class="content">
             <h2>Admin Panel</h2>
-            <section>
-            </section>
+            <md-content class="md-padding">
+                <md-content>
+                    <md-tabs md-dynamic-height md-border-bottom>
+                        <md-tab label="College" md-active="activecollege">
+                            <md-content class="md-padding">
+                                <h1 class="md-display-2">College
+                                    <md-button class="md-raised" href="#!/addcollege">
+                                        <md-icon class="editicon" md-svg-src="/static/images/icons/plus.svg"></md-icon>
+                                        Add College</md-button>
+                                </h1>
+                                <div class="tab-content">
+                                    <table class ="datatable table table-striped table-bordered" align="center" valign="left">
+                                        <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Contact Number</th>
+                                            <th>Email</th>
+                                            <th>Address</th>
+                                            <th>Edit/Delete</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr ng-repeat="college in colleges" ng-include src="getCollegeTemplate(college)">
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div><!-- tab-content -->
+                            </md-content>
+                        </md-tab>
+                        <md-tab label="User" md-active="activeuser">
+                            <md-content class="md-padding">
+                                <h1 class="md-display-2">User</h1>
+                                <div class="tab-content">
+                                    <table class ="datatable table table-striped table-bordered" align="center" valign="left">
+                                        <thead>
+                                        <tr>
+                                            <th>First Name</th>
+                                            <th>Last Name</th>
+                                            <th>Email</th>
+                                            <th>Username</th>
+                                            <th>Date of Birth</th>
+                                            <th>Gender</th>
+                                            <th>Address</th>
+                                            <th>Edit/Delete</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr ng-repeat="student in students" ng-include src="getStudentTemplate(student)">
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div><!-- tab-content -->
+                            </md-content>
+                        </md-tab>
+                        <md-tab label="College Application" md-active="activeapplication">
+                            <md-content class="md-padding">
+                                <h1 class="md-display-2">College Application</h1>
+                                <div class="tab-content">
+                                    <table class ="datatable table table-striped table-bordered" align="center" valign="left">
+                                        <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Contact Number</th>
+                                            <th>Email</th>
+                                            <th>Address</th>
+                                            <th>Applied Time</th>
+                                            <th>Solved</th>
+                                            <th>Status</th>
+                                            <th>Courses</th>
+                                            <th>Approve/ Reject/ Delete</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr ng-repeat="application in applications">
+                                            <td>
+                                                <p style="padding-left:5px"><span ng-bind="application.name"></span></p>
+                                            </td>
+                                            <td>
+                                                <p style="padding-left:5px"><span ng-bind="application.contact_number"></span></p>
+                                            </td>
+                                            <td>
+                                                <p style="padding-left:5px"><span ng-bind="application.email"></span></p>
+                                            </td>
+                                            <td>
+                                                <p style="padding-left:5px"><span ng-bind="application.address"></span></p>
+                                            </td>
+                                            <td>
+                                                <p style="padding-left:5px"><span ng-bind="application.applied"></span></p>
+                                            </td>
+                                            <td>
+                                                <p style="padding-left:5px"><span ng-bind="application.solved"></span></p>
+                                            </td>
+                                            <td>
+                                                <p style="padding-left:5px"><span ng-bind="application.status"></span></p>
+                                            </td>
+                                            <td>
+                                                <a ng-if="application.courses" href={{application.courses}} style="padding-left:5px"><span ng-bind="application.coursesName"></span></a>
+                                            </td>
+                                            <td ng-show="showApproveReject(application)">
+                                                <md-button class="md-fab md-primary md-mini" aria-label="Use Android" ng-click="approveApplication(application)">
+                                                    <md-icon class="editicon" md-svg-src="/static/images/icons/tick.svg"></md-icon>
+                                                </md-button>
+                                                <md-button class="md-fab md-mini" aria-label="Use Android" ng-click="rejectApplication(application)">
+                                                    <md-icon class="editicon" md-svg-src="/static/images/icons/cancel2.svg"></md-icon>
+                                                </md-button>
+                                                <md-button class="md-fab md-warn md-mini" aria-label="Use Android" ng-click="deleteApplication($event,application)">
+                                                    <md-icon class="editicon" md-svg-src="/static/images/icons/delete.svg"></md-icon>
+                                                </md-button>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div><!-- tab-content -->
+                            </md-content>
+                        </md-tab>
+                        <md-tab label="Report" md-active="activereport">
+                            <md-content class="md-padding">
+                                <h1 class="md-display-2">Report</h1>
+                                <div class="tab-content">
+                                    <table class ="datatable table table-striped table-bordered" align="center" valign="left">
+                                        <thead>
+                                        <tr>
+                                            <th>Reason</th>
+                                            <th>Reported Time</th>
+                                            <th>Solved</th>
+                                            <th>Status</th>
+                                            <th>View</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr ng-repeat="report in reports" ng-include src="getReportTemplate(report)">
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div><!-- tab-content -->
+                            </md-content>
+                        </md-tab>
+                    </md-tabs>
+                </md-content>
+
+            </md-content>
         </div>
 
     </section>

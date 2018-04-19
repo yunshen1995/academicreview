@@ -250,7 +250,6 @@ function collegeMainController($scope, $http, $rootScope, $route, $routeParams, 
             $scope.wiki = $sce.trustAsHtml(data.data.query.pages[0].extract);
         });
 
-        console.log(college.name)
 
         gis(college.name+' campus', logResults);
         function logResults(error, results) {
@@ -258,15 +257,14 @@ function collegeMainController($scope, $http, $rootScope, $route, $routeParams, 
                 console.log(error);
             }
             else {
-                var images = results;
+                var images = results.sort();
                 var imagepath;
                 for(var i=0; i<images.length;i++){
-                    if(images[i].width>1366){
+                    if(images[i].width>1920 && images[i].height<2500){
                         imagepath = images[i].url;
                         break;
                     }
                 }
-                console.log(imagepath)
                 $scope.$apply(function () {
                     $scope.image= {
                         'background-image': 'url(\'stylesheets/images/light-bl.svg\'), url(\'stylesheets/images/light-br.svg\'), url(\'stylesheets/images/overlay.png\'), url(\''+ imagepath +'\')'

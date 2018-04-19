@@ -3,11 +3,7 @@ function searchResultController($scope, $http, $location , $routeParams, GoogleI
 	$scope.check.mainpage = false;
 	$scope.keyword = 'Search Result: '+ $routeParams.param;
 
-	var params = {
-		"keyword": $routeParams.param
-	};
-
-	$http.post('api/v1/colleges/search/',params).then(async function (data) {
+	$http.get('api/v1/colleges/search/'+$routeParams.param+'/').then(async function (data) {
 		$scope.results = data.data;
 		for(var i=0; i<$scope.results.length;i++){
 			await GoogleImageSearch.searchImage($scope.results[i].name+' logo').then((res) => {
@@ -20,7 +16,7 @@ function searchResultController($scope, $http, $location , $routeParams, GoogleI
 	});
 
 	$scope.go = function(college) {
-		$location.path('/college/'+ college._id);
+		$location.path('/college/'+ college.id);
 	};
 }
 

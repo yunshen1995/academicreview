@@ -8,7 +8,7 @@ function editCollegeController($scope, $http, $rootScope, $route, $location, $md
 	});
 
 	$scope.showEditDelete = function () {
-		if($rootScope.currentUser)
+		if($rootScope.currentUser.is_superuser)
 			return true;
 		else
 			return false;

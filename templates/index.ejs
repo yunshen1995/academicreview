@@ -22,19 +22,19 @@
                     <a href="#">Colleges</a>
                     <ul>
                         <li><a href="#!/colleges">All Colleges</a></li>
-                        <li><a href="#!/applycollege">College Application</a></li>
+                        <li ng-if="currentUser"><a href="#!/applycollege">College Application</a></li>
                     </ul>
                 </li>
                 <li class="submenu">
                     <a href="#" ng-if="currentUser.is_superuser">Admin</a>
                     <ul>
-                        <li><a href="#!/adminpanel">Admin Panel</a></li>
+                        <li><a href="#!/adminpanel/college">Admin Panel</a></li>
                         <li><a href="#!/addcollege">Modify College</a></li>
                     </ul>
                 </li>
                 <li ng-if="currentUser.is_superuser">
                     <md-button aria-label="Notification" class="md-icon-button" style="overflow: visible" ng-click="showToolbarMenu($event, notification)"
-                        ng-style="check.mainpage ? {'padding-top':'inherit'}:{'padding-top':'0'}">
+                               ng-style="check.mainpage ? {'padding-top':'inherit'}:{'padding-top':'0'}">
                         <md-icon ng-style="check.mainpage ? {'color':'white'}:{'color':'inherit'}" class="editicon" md-svg-src="/static/images/icons/notifications.svg"></md-icon>
                         <md-badge ng-style="check.mainpage ? {'position': 'absolute','top':'22px','left':'20px'}:{'position': 'absolute','top':'18px','left':'20px'}"><span ng-bind="badgecount"></span></md-badge>
                     </md-button>
@@ -80,7 +80,7 @@
                 </td>
                 <td ng-show="showDelete(reply.replier_id)">
                     <md-button class="md-fab md-mini" aria-label="Use Android" ng-click="deleteReply($event,reply)" ng-show="checkreport">
-                        <md-icon class="editicon" md-svg-src="/static/images/icons/delete.svg"></md-icon>
+                        <md-icon md-svg-src="/static/images/icons/cancel2.svg"></md-icon>
                     </md-button>
                 </td>
             </tr>
@@ -102,11 +102,11 @@
             </md-fab-trigger>
             <md-fab-actions>
                 <md-button class="md-fab md-primary md-mini" aria-label="Use Android" ng-click="editReview(review)"
-                 ng-show="showEditDelete(review.reviewer_id)">
+                           ng-show="showEditDelete(review.reviewer_id)">
                     <md-icon class="editicon" md-svg-src="/static/images/icons/edit.svg"></md-icon>
                 </md-button>
                 <md-button class="md-fab md-warn md-mini" aria-label="Use Android" ng-click="deleteReview($event,review)"
-                 ng-show="showEditDelete(review.reviewer_id)">
+                           ng-show="showEditDelete(review.reviewer_id)">
                     <md-icon class="editicon" md-svg-src="/static/images/icons/delete.svg"></md-icon>
                 </md-button>
                 <md-button style="color:white" class="md-fab md-mini" aria-label="Use Android" ng-click="reportReview($event,review)">
@@ -129,7 +129,7 @@
                 </td>
                 <td ng-show="showDelete(reply.replier_id)">
                     <md-button class="md-fab md-mini" aria-label="Use Android" ng-click="deleteReply($event,reply)" ng-show="checkreport">
-                        <md-icon class="editicon" md-svg-src="/static/images/icons/delete.svg"></md-icon>
+                        <md-icon class="editicon" md-svg-src="/static/images/icons/cancel2.svg"></md-icon>
                     </md-button>
                 </td>
             </tr>
@@ -178,6 +178,52 @@
             <md-icon class="editicon" md-svg-src="/static/images/icons/save.svg"></md-icon>
         </md-button>
         <md-button class="md-fab md-warn" aria-label="Use Android" ng-click="reset()">
+            <md-icon class="editicon" md-svg-src="/static/images/icons/cancel.svg"></md-icon>
+        </md-button>
+    </td>
+</script>
+
+<script type="text/ng-template" id="displaycollegeadmin">
+    <td>
+        <p style="padding-left:5px"><span ng-bind="college.name"></span></p>
+    </td>
+    <td>
+        <p style="padding-left:5px"><span ng-bind="college.contact_number"></span></p>
+    </td>
+    <td>
+        <p style="padding-left:5px"><span ng-bind="college.email"></span></p>
+    </td>
+    <td>
+        <p style="padding-left:5px"><span ng-bind="college.address"></span></p>
+    </td>
+    <td ng-show="showEditDelete()">
+        <md-button class="md-fab md-primary md-mini" aria-label="Use Android" ng-click="editCollege(college)">
+            <md-icon class="editicon" md-svg-src="/static/images/icons/edit.svg"></md-icon>
+        </md-button>
+        <md-button class="md-fab md-warn md-mini" aria-label="Use Android" ng-click="deleteCollege($event,college)">
+            <md-icon class="editicon" md-svg-src="/static/images/icons/delete.svg"></md-icon>
+        </md-button>
+    </td>
+</script>
+
+<script type="text/ng-template" id="editcollegeadmin">
+    <td>
+        <input id="name" type="text" ng-model=college.name class="form-control input-sm"/>
+    </td>
+    <td>
+        <input id="contactno" type="text" ng-model=college.contact_number class="form-control input-sm"/>
+    </td>
+    <td>
+        <input id="email" type="text" ng-model=college.email class="form-control input-sm"/>
+    </td>
+    <td>
+        <input id="address" type="text" ng-model=college.address class="form-control input-sm"/>
+    </td>
+    <td ng-show="showEditDelete()">
+        <md-button class="md-fab md-primary md-mini" aria-label="Use Android" ng-click="updateCollege(college)">
+            <md-icon class="editicon" md-svg-src="/static/images/icons/save.svg"></md-icon>
+        </md-button>
+        <md-button class="md-fab md-warn md-mini" aria-label="Use Android" ng-click="reset()">
             <md-icon class="editicon" md-svg-src="/static/images/icons/cancel.svg"></md-icon>
         </md-button>
     </td>
@@ -244,5 +290,116 @@
     </tr>
 </script>
 
+<script type="text/ng-template" id="displaystudentadmin">
+    <tr>
+        <td>
+            <p><span ng-bind="student.first_name"></span></p>
+        </td>
+        <td>
+            <p><span ng-bind="student.last_name"></span></p>
+        </td>
+        <td>
+            <p><span ng-bind="student.email"></span></p>
+        </td>
+        <td>
+            <p><span ng-bind="student.username"></span></p>
+        </td>
+        <td>
+            <p><span ng-bind="student.dob"></span></p>
+        </td>
+        <td>
+            <p><span ng-bind="student.gender"></span></p>
+        </td>
+        <td>
+            <p><span ng-bind="student.address"></span></p>
+        </td>
+        <td ng-show="showEditDelete()">
+            <md-button class="md-fab md-primary md-mini" aria-label="Use Android" ng-click="editStudent(student)">
+                <md-icon class="editicon" md-svg-src="/static/images/icons/edit.svg"></md-icon>
+            </md-button>
+            <md-button class="md-fab md-warn md-mini" aria-label="Use Android" ng-click="deleteStudent($event,student)">
+                <md-icon class="editicon" md-svg-src="/static/images/icons/delete.svg"></md-icon>
+            </md-button>
+        </td>
+    </tr>
+</script>
+
+<script type="text/ng-template" id="editstudentadmin">
+    <tr>
+        <td>
+            <input id="first_name" type="text" ng-model=student.first_name class="form-control input-sm"/>
+        </td>
+        <td>
+            <input id="last_name" type="text" ng-model=student.last_name class="form-control input-sm"/>
+        </td>
+        <td>
+            <input id="email" type="text" ng-model=student.email class="form-control input-sm"/>
+        </td>
+        <td>
+            <p><span ng-bind="student.username"></span></p>
+        </td>
+        <td>
+            <md-datepicker id="dob" md-current-view="year" ng-model="student.dob" md-placeholder="Enter date"></md-datepicker><br>
+        </td>
+        <td>
+            <md-select id="gender" ng-model="student.gender">
+                <md-option ng-repeat="gender in genderopt" ng-value=gender><span ng-bind="gender"></span></md-option>
+            </md-select>
+        </td>
+        <td>
+            <textarea id="address" ng-model=student.address></textarea>
+        </td>
+        <td ng-show="showEditDelete()">
+            <md-button class="md-fab md-primary md-mini" aria-label="Use Android" ng-click="updateStudent(student)">
+                <md-icon class="editicon" md-svg-src="/static/images/icons/save.svg"></md-icon>
+            </md-button>
+            <md-button class="md-fab md-warn md-mini" aria-label="Use Android" ng-click="reset()">
+                <md-icon class="editicon" md-svg-src="/static/images/icons/cancel.svg"></md-icon>
+            </md-button>
+        </td>
+    </tr>
+</script>
+
+<script type="text/ng-template" id="displayreportadmin">
+    <tr>
+        <td>
+            <p><span ng-bind="report.reason"></span></p>
+        </td>
+        <td>
+            <p><span ng-bind="report.reported"></span></p>
+        </td>
+        <td>
+            <p><span ng-bind="report.solved"></span></p>
+        </td>
+        <td>
+            <p><span ng-bind="report.status"></span></p>
+        </td>
+        <td ng-show="showEditDelete()">
+            <md-button class="md-fab md-primary md-mini" aria-label="Use Android" ng-click="checkReview(report)">
+                <md-icon class="editicon" md-svg-src="/static/images/icons/edit.svg"></md-icon>
+            </md-button>
+        </td>
+    </tr>
+</script>
+
+<script type="text/ng-template" id="editreportadmin">
+    <tr>
+        <td colspan="4">
+            <table class ="review table table-striped table-bordered" align="center" valign="left">
+                <tr ng-model="review" ng-include src="getReviewTemplate(review)"
+                    ng-mouseenter="checkreport=true">
+                </tr>
+            </table>
+        </td>
+        <td ng-show="showEditDelete()">
+            <md-button class="md-fab md-primary md-mini" aria-label="Use Android" ng-click="updateStudent(student)">
+                <md-icon class="editicon" md-svg-src="/static/images/icons/save.svg"></md-icon>
+            </md-button>
+            <md-button class="md-fab md-warn md-mini" aria-label="Use Android" ng-click="reset()">
+                <md-icon class="editicon" md-svg-src="/static/images/icons/cancel.svg"></md-icon>
+            </md-button>
+        </td>
+    </tr>
+</script>
 </body>
 </html>

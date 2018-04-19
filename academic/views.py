@@ -18,6 +18,9 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
+    def patch(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)
+
     @detail_route(methods=['get', 'post'], url_path='course')
     def course(self, request, pk=None):
         if request.method == 'POST':
@@ -174,19 +177,31 @@ class CollegeViewSet(viewsets.ModelViewSet):
     queryset = College.objects.all()
     serializer_class = CollegeSerializer
 
-    @list_route(methods=['post'], url_path='search')
-    def search(self, request):
-        college = College.objects.filter(name__icontains=request.data['keyword'])
+    def patch(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)
+
+    @list_route(methods=['get'], url_path='search/(?P<keyword>[a-zA-Z0-9 ]+)')
+    def search(self, request, keyword=None):
+        college = College.objects.filter(name__icontains=keyword)
+        list_of_ids = []
         if not college:
             colleges = College.objects.all()
             for c in colleges:
                 abbr = ""
+                abbr2 = ""
                 for i in c.name.split():
                     if i[0].isupper():
                         abbr += i[0]
-                if abbr == request.data['keyword'].upper():
-                    college = colleges.filter(id=c.id)
-                    break
+                        abbr2 += i[0]
+                    if i == c.name.split()[0]:
+                        abbr2 += i[-1:].upper()
+                if 'IT' in keyword.upper() and len(keyword) > 6:
+                    abbr = abbr[:-1]
+                    abbr += ' ' + c.name.split()[-1]
+                    abbr = abbr.upper()
+                if abbr == keyword.upper() or abbr2 == keyword.upper():
+                    list_of_ids.append(c.id)
+            college = colleges.filter(id__in=list_of_ids)
         return Response(college.values())
 
     @detail_route(methods=['get', 'post'], url_path='review')
@@ -247,7 +262,7 @@ class CollegeViewSet(viewsets.ModelViewSet):
                 reviewer = review.get("reviewer")
                 type = review.get("type")
                 reviewer_instance = User.objects.get(id=reviewer)
-                r1 = Review(rating=rating, comment=comment, reviewer=reviewer_instance, type=type)
+                r1 = Review(id=review_id, rating=rating, comment=comment, reviewer=reviewer_instance, type=type)
                 r1.save()
                 college.reviews.add(r1.id)
                 reviews = college.reviews.all()
@@ -273,6 +288,9 @@ class CollegeViewSet(viewsets.ModelViewSet):
 class CourseViewSet(viewsets.ModelViewSet):
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
+
+    def patch(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)
 
     @detail_route(methods=['get', 'post'], url_path='review')
     def review(self, request, pk=None):
@@ -332,7 +350,7 @@ class CourseViewSet(viewsets.ModelViewSet):
                 reviewer = review.get("reviewer")
                 type = review.get("type")
                 reviewer_instance = User.objects.get(id=reviewer)
-                r1 = Review(rating=rating, comment=comment, reviewer=reviewer_instance, type=type)
+                r1 = Review(id=id, rating=rating, comment=comment, reviewer=reviewer_instance, type=type)
                 r1.save()
                 course.reviews.add(r1.id)
                 reviews = course.reviews.all()
@@ -354,15 +372,29 @@ class ReplyViewSet(viewsets.ModelViewSet):
     queryset = Reply.objects.all()
     serializer_class = ReplySerializer
 
+    def patch(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)
+
 
 class ReviewViewSet(viewsets.ModelViewSet):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
 
+    @detail_route(methods=['get'], url_path='replies')
+    def all_reply(self, request, pk=None):
+        reply = Reply.objects.filter(review=pk)
+        return Response(reply.values())
+
+    def patch(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)
+
 
 class CollegeApplicationViewSet(viewsets.ModelViewSet):
     queryset = CollegeApplication.objects.all()
     serializer_class = CollegeApplicationSerializer
+
+    def patch(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)
 
 
 class ReportViewSet(viewsets.ModelViewSet):
@@ -375,5 +407,14 @@ class Notification(APIView):
         data = {
             'application': CollegeApplicationSerializer(CollegeApplication.objects.filter(notification=True), many=True).data,
             'report': ReportSerializer(Report.objects.filter(notification=True), many=True).data
+        }
+        return Response(data)
+
+
+class ApplicationReport(APIView):
+    def get(self, request):
+        data = {
+            'application': CollegeApplicationSerializer(CollegeApplication.objects.all(), many=True).data,
+            'report': ReportSerializer(Report.objects.all(), many=True).data
         }
         return Response(data)

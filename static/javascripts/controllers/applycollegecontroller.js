@@ -11,7 +11,9 @@ function applyCollegeController($scope, $http, $mdDialog, $location) {
 	};
 
 	$scope.applycollege = function (credentials) {
-	    credentials.courses = credentials.courses.data;
+		if(credentials.courses){
+	        credentials.courses = credentials.courses.data;
+        }
 		$http.post('api/v1/collegeapplication/',credentials).then(function () {
 			var alert = $mdDialog.alert()
 				.title('Successfully Applied College')

@@ -251,14 +251,15 @@ class PDFBase64File(Base64FileField):
 
 
 class CollegeApplicationSerializer(serializers.ModelSerializer):
-    courses = PDFBase64File()
+    courses = PDFBase64File().allow_null
 
     class Meta:
         model = CollegeApplication
-        fields = ('id', 'name', 'email', 'address', 'contact_number', 'applied', 'notification', 'courses', 'solved')
+        fields = ('id', 'name', 'email', 'address', 'contact_number', 'applied', 'notification', 'courses', 'solved', 'status')
 
 
 class ReportSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Report
-        fields = ('id', 'review', 'reporter', 'notification', 'reported', 'solved', 'reason')
+        fields = ('id', 'review', 'reporter', 'notification', 'reported', 'solved', 'reason', 'status')

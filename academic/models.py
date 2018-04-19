@@ -2,6 +2,7 @@ from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import BaseUserManager
+from django.utils import timezone
 from datetime import datetime, timedelta
 
 
@@ -99,7 +100,7 @@ class Review(models.Model):
     comment = models.CharField(max_length=3000)
     reviewer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     type = models.CharField(max_length=30, blank=True)
-    date = models.DateTimeField(default=datetime.now, blank=True)
+    date = models.DateTimeField(auto_now_add=True, blank=True)
 
 
 class Reply(models.Model):
@@ -107,7 +108,7 @@ class Reply(models.Model):
     review = models.ForeignKey(Review, on_delete=models.CASCADE)
     replier = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     comment = models.CharField(max_length=3000)
-    date = models.DateTimeField(default=datetime.now, blank=True)
+    date = models.DateTimeField(auto_now_add=True, blank=True)
 
 
 class CollegeApplication(models.Model):
@@ -118,8 +119,9 @@ class CollegeApplication(models.Model):
     contact_number = models.CharField(max_length=30)
     applied = models.DateTimeField(auto_now_add=True)
     notification = models.BooleanField(default=True)
-    solved = models.BooleanField(default=True)
-    courses = models.FileField()
+    solved = models.BooleanField(default=False)
+    status = models.CharField(max_length=30, default='Pending')
+    courses = models.FileField(blank=True, null=True)
 
 
 class Report(models.Model):
@@ -129,4 +131,5 @@ class Report(models.Model):
     reporter = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
     notification = models.BooleanField(default=True)
     reported = models.DateTimeField(auto_now_add=True)
-    solved = models.BooleanField(default=True)
+    solved = models.BooleanField(default=False)
+    status = models.CharField(max_length=30, default='Pending')
