@@ -27,7 +27,7 @@
     "fuse.js": "^3.2.0",
     "g-i-s": "https://github.com/rrongan/g-i-s.git",
     "jquery": "^3.2.1",
-    "moment": "^2.19.3",
+    "moment": "^2.29.4",
     "mongodb": "^2.2.33",
     "mongodb-download": "2.2.3",
     "mongoose": "^4.12.3",
